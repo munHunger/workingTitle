@@ -152,6 +152,7 @@ public class QuadTree<T> implements Paintable
 	
 	/**
 	 * Get the amount of objects contained in this tree
+	 * 
 	 * @return the amount of objects in the tree
 	 */
 	public int size()
@@ -242,76 +243,24 @@ public class QuadTree<T> implements Paintable
 	 * 
 	 * @param element
 	 *            object to move
+	 * @param mover
+	 *            A runnable object that will perform the actual movement. i.e.
+	 *            this will change the x/y coordinates of the element
 	 * @return The new(or possibly old) quadtree root
 	 * @throws IllegalArgumentException
 	 *             if the object is not contained in the tree
 	 */
-	public QuadTree<T> updateObjectPosition(SizedObject<T> element) throws IllegalArgumentException
+	public QuadTree<T> updateObjectPosition(SizedObject<T> element, Runnable mover) throws IllegalArgumentException
 	{
-		if (remove(element.getObject(), true))
-		{
-			return add(element);
-		}
-		System.out.println("Fell out");
-		return this;
-	}
-	
-	/**
-	 * Removes the object from the tree.
-	 * This action can cause the tree to prune itself, however it will never
-	 * prune to the point of removing the final node
-	 * 
-	 * @param element
-	 *            the element to search for, and to remove
-	 * @param strict
-	 *            if true the search will get objects that are the exact same
-	 *            reference. If false, it will take the first object that is
-	 *            equal to element
-	 * @return true if an element was removed, false otherwise
-	 */
-	public boolean remove(T element, boolean strict)
-	{
-		boolean removed = false;
-		for (int i = 0; i < horizontal.size(); i++)
-			if ((strict && horizontal.get(i).getObject().equals(element))
-					|| (!strict && horizontal.get(i).getObject() == element))
-			{
-				removed = horizontal.remove(i) != null;
-				break;
-			}
-		if (!removed)
-			for (int i = 0; i < vertical.size(); i++)
-				if ((strict && vertical.get(i).getObject().equals(element))
-						|| (!strict && vertical.get(i).getObject() == element))
-				{
-					removed = vertical.remove(i) != null;
-					break;
-				}
-				
+		boolean removed = remove(element, true);
 		if (removed)
 		{
-			size--;
-			QuadTree<T> parent = this.parent;
-			while (parent != null)
-			{
-				parent.size--;
-				parent = parent.parent;
-			}
+			mover.run();
+			return add(element);
 		}
-		
-		if (isEmpty() && parent != null) // Prune
-		{
-			if (parent.upperLeft.getObject() == this)
-				parent.upperLeft.setObject(null);
-			else if (parent.upperRight.getObject() == this)
-				parent.upperRight.setObject(null);
-			else if (parent.lowerLeft.getObject() == this)
-				parent.lowerLeft.setObject(null);
-			else if (parent.lowerRight.getObject() == this)
-				parent.lowerRight.setObject(null);
-		}
-		
-		return removed;
+		Log.error(null, "Could not move object in QuadTree, " + (removed ? "could remove, but not add back in"
+				: "could not remove, element might not have been in list"), this);
+		return this;
 	}
 	
 	/**
@@ -330,7 +279,19 @@ public class QuadTree<T> implements Paintable
 	public boolean remove(SizedObject<T> element, boolean strict)
 	{
 		if (!sizeWrapper.contains(element))
-			return (parent != null) ? parent.remove(element, strict) : false;
+		{
+			if (parent != null)
+			{
+				Log.info("Could not remove as object was not in this node, trying again in parent", this);
+				return parent.remove(element, strict);
+			}
+			else
+			{
+				Log.warn(null,
+						"Element was not in this node, nor was it in any parent node. The object was outside the tree and could therefore not be removed",
+						this);
+			}
+		}
 		boolean removed = false;
 		for (SizedObject<T> o : horizontal)
 			if ((strict && o.equals(element)) || (!strict && o == element))
@@ -348,14 +309,17 @@ public class QuadTree<T> implements Paintable
 				
 		if (!removed)
 		{
+			Log.info("Need to go down into the tree to find object to remove", this);
 			if (upperLeft.contains(element))
 				return (upperLeft.getObject() != null) ? upperLeft.getObject().remove(element, strict) : false;
-			if (upperRight.contains(element))
+			else if (upperRight.contains(element))
 				return (upperRight.getObject() != null) ? upperRight.getObject().remove(element, strict) : false;
-			if (lowerLeft.contains(element))
+			else if (lowerLeft.contains(element))
 				return (lowerLeft.getObject() != null) ? lowerLeft.getObject().remove(element, strict) : false;
-			if (lowerRight.contains(element))
+			else if (lowerRight.contains(element))
 				return (lowerRight.getObject() != null) ? lowerRight.getObject().remove(element, strict) : false;
+			else
+				Log.error(null, "Could not remove object as it could not be contained anywhere", this);
 		}
 		if (removed)
 		{
@@ -370,6 +334,7 @@ public class QuadTree<T> implements Paintable
 		
 		if (isEmpty() && parent != null) // Prune
 		{
+			Log.info("Pruning tree", this);
 			if (parent.upperLeft.getObject() == this)
 				parent.upperLeft.setObject(null);
 			else if (parent.upperRight.getObject() == this)
@@ -421,46 +386,57 @@ public class QuadTree<T> implements Paintable
 	{
 		if (root.parent != null)
 			throw new IllegalArgumentException("root argument was not real root. root must be absolute root");
-		if (parent == null && !sizeWrapper.contains(element))
+		if (!sizeWrapper.contains(element))
 		{
 			size--; // We don't add to this node
-			if (element.getX() < verticalMidLine.getX1())
+			if (parent != null)
 			{
-				if (element.getY() > horizontalMidLine.getY1()) // Lower left
-				{
-					parent = new QuadTree<>(sizeWrapper.getX() - sizeWrapper.getWidth(), sizeWrapper.getY(),
-							sizeWrapper.getWidth() * 2, sizeWrapper.getHeight() * 2);
-					parent.upperRight.setObject(this);
-					parent.size = size + 1;
-					return parent.add(element, parent);
-				}
-				else // Upper left
-				{
-					parent = new QuadTree<>(sizeWrapper.getX() - sizeWrapper.getWidth(),
-							sizeWrapper.getY() - sizeWrapper.getHeight(), sizeWrapper.getWidth() * 2,
-							sizeWrapper.getHeight() * 2);
-					parent.lowerRight.setObject(this);
-					parent.size = size + 1;
-					return parent.add(element, parent);
-				}
+				Log.info("Letting parent node handle add", this);
+				return parent.add(element, root);
 			}
 			else
 			{
-				if (element.getY() > horizontalMidLine.getY1()) // Lower right
+				Log.info("Need to create new parent node", this);
+				if (element.getX() < verticalMidLine.getX1())
 				{
-					parent = new QuadTree<>(sizeWrapper.getX(), sizeWrapper.getY(), sizeWrapper.getWidth() * 2,
-							sizeWrapper.getHeight() * 2);
-					parent.upperLeft.setObject(this);
-					parent.size = size + 1;
-					return parent.add(element, parent);
+					if (element.getY() > horizontalMidLine.getY1()) // Lower
+																	// left
+					{
+						parent = new QuadTree<>(sizeWrapper.getX() - sizeWrapper.getWidth(), sizeWrapper.getY(),
+								sizeWrapper.getWidth() * 2, sizeWrapper.getHeight() * 2);
+						parent.upperRight.setObject(this);
+						parent.size = size + 1;
+						return parent.add(element, parent);
+					}
+					else // Upper left
+					{
+						parent = new QuadTree<>(sizeWrapper.getX() - sizeWrapper.getWidth(),
+								sizeWrapper.getY() - sizeWrapper.getHeight(), sizeWrapper.getWidth() * 2,
+								sizeWrapper.getHeight() * 2);
+						parent.lowerRight.setObject(this);
+						parent.size = size + 1;
+						return parent.add(element, parent);
+					}
 				}
-				else // Upper right
+				else
 				{
-					parent = new QuadTree<>(sizeWrapper.getX(), sizeWrapper.getY() - sizeWrapper.getHeight(),
-							sizeWrapper.getWidth() * 2, sizeWrapper.getHeight() * 2);
-					parent.lowerLeft.setObject(this);
-					parent.size = size + 1;
-					return parent.add(element, parent);
+					if (element.getY() > horizontalMidLine.getY1()) // Lower
+																	// right
+					{
+						parent = new QuadTree<>(sizeWrapper.getX(), sizeWrapper.getY(), sizeWrapper.getWidth() * 2,
+								sizeWrapper.getHeight() * 2);
+						parent.upperLeft.setObject(this);
+						parent.size = size + 1;
+						return parent.add(element, parent);
+					}
+					else // Upper right
+					{
+						parent = new QuadTree<>(sizeWrapper.getX(), sizeWrapper.getY() - sizeWrapper.getHeight(),
+								sizeWrapper.getWidth() * 2, sizeWrapper.getHeight() * 2);
+						parent.lowerLeft.setObject(this);
+						parent.size = size + 1;
+						return parent.add(element, parent);
+					}
 				}
 			}
 		}
@@ -487,6 +463,10 @@ public class QuadTree<T> implements Paintable
 		else if (lowerRight.contains(element))
 		{
 			populateChild(lowerRight).add(element);
+		}
+		else
+		{
+			Log.error(null, "Could not add entity to Quad Tree", this);
 		}
 		return root;
 	}

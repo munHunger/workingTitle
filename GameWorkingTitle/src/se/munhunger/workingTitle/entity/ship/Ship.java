@@ -48,32 +48,40 @@ public class Ship extends Entity implements KeyListener
 		{
 			Keyboard.press(KeyEvent.VK_W, () ->
 			{
-				getSize().setYf(getSize().getYf() - Keyboard.getTimeSinceLast(KeyEvent.VK_W) * speed);
-				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize());
+				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
+				{
+					getSize().setYf(getSize().getYf() - Keyboard.getTimeSinceLast(KeyEvent.VK_W) * speed);
+				});
 			});
 		});
 		keyMaps.put(KeyEvent.VK_S, () ->
 		{
 			Keyboard.press(KeyEvent.VK_S, () ->
 			{
-				getSize().setYf(getSize().getYf() + Keyboard.getTimeSinceLast(KeyEvent.VK_S) * speed);
-				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize());
+				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
+				{
+					getSize().setYf(getSize().getYf() + Keyboard.getTimeSinceLast(KeyEvent.VK_S) * speed);
+				});
 			});
 		});
 		keyMaps.put(KeyEvent.VK_A, () ->
 		{
 			Keyboard.press(KeyEvent.VK_A, () ->
 			{
-				getSize().setXf(getSize().getXf() - Keyboard.getTimeSinceLast(KeyEvent.VK_A) * speed);
-				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize());
+				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
+				{
+					getSize().setXf(getSize().getXf() - Keyboard.getTimeSinceLast(KeyEvent.VK_A) * speed);
+				});
 			});
 		});
 		keyMaps.put(KeyEvent.VK_D, () ->
 		{
 			Keyboard.press(KeyEvent.VK_D, () ->
 			{
-				getSize().setXf(getSize().getXf() + Keyboard.getTimeSinceLast(KeyEvent.VK_D) * speed);
-				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize());
+				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
+				{
+					getSize().setXf(getSize().getXf() + Keyboard.getTimeSinceLast(KeyEvent.VK_D) * speed);
+				});
 			});
 		});
 	}
@@ -133,13 +141,13 @@ public class Ship extends Entity implements KeyListener
 	{
 		if (keyMaps.containsKey(e.getKeyCode()))
 			keyMaps.get(e.getKeyCode()).run();
-		
+			
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-		if(keyMaps.containsKey(e.getKeyCode()))
+		if (keyMaps.containsKey(e.getKeyCode()))
 			Keyboard.release(e.getKeyCode());
 	}
 }
