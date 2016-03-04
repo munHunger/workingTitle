@@ -2,12 +2,14 @@ package se.munhunger.workingTitle.entity.ship;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.Map;
 
 import se.munhunger.workingTitle.entity.Entity;
 import se.munhunger.workingTitle.entity.projectile.BasicFlight;
-import se.munhunger.workingTitle.game.Globals;
+import se.munhunger.workingTitle.util.Globals;
 import se.munhunger.workingTitle.util.Keyboard;
 
 /**
@@ -16,7 +18,7 @@ import se.munhunger.workingTitle.util.Keyboard;
  * @author munhunger
  * 		
  */
-public class Ship extends Entity implements KeyListener
+public class Ship extends Entity implements KeyListener, MouseMotionListener
 {
 	/**
 	 * Denotes what type of ship to pre-generate
@@ -36,7 +38,7 @@ public class Ship extends Entity implements KeyListener
 	/**
 	 * Speed of the ship. Notes how fast it can move through space
 	 */
-	private float speed = 0.001f;
+	private float speed = 0.1f;
 	
 	/**
 	 * The mapping for keyboard key actions
@@ -149,5 +151,21 @@ public class Ship extends Entity implements KeyListener
 	{
 		if (keyMaps.containsKey(e.getKeyCode()))
 			Keyboard.release(e.getKeyCode());
+	}
+	
+	@Override
+	public void mouseDragged(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent e)
+	{
+		float xDiff = e.getX() - (getSize().getX() + getSize().getWidth()/2);
+		float yDiff = e.getY() - (getSize().getY() + getSize().getHeight()/2);
+		
+		getSize().setRotation((float) (Math.atan2(-xDiff, yDiff) + Math.PI));
 	}
 }

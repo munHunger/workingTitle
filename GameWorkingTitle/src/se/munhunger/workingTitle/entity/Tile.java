@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import se.munhunger.workingTitle.graphics.Paintable;
+import se.munhunger.workingTitle.util.Globals;
 import se.munhunger.workingTitle.util.SizedObject;
 
 /**
@@ -58,8 +59,9 @@ public class Tile implements Paintable
 	}
 	
 	@Override
-	public void paint(Graphics2D g2d, float xOffset, float yOffset, float zoom, boolean displace)
+	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
 	{
+		float zoom = Globals.zoom;
 		Color oldColor = g2d.getColor();
 		g2d.setColor(color);
 		g2d.fillRect((int)((size.getX() + xOffset) * (displace ? zoom : 1)), (int)((size.getY() + yOffset) * (displace ? zoom : 1)), (int)(1 * zoom), (int)(1 * zoom));

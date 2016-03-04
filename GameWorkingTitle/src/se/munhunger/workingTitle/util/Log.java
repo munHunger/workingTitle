@@ -88,7 +88,7 @@ public class Log
 	/**
 	 * The current log level. This will determine how much to print at runtime
 	 */
-	private static LogLevel logLevel = LogLevel.INFO;
+	private static LogLevel logLevel = LogLevel.ERROR;
 	
 	/**
 	 * Flag to determine whether or not to print to the standard system output

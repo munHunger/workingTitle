@@ -1,7 +1,6 @@
-package se.munhunger.workingTitle.game;
+package se.munhunger.workingTitle.util;
 
 import se.munhunger.workingTitle.entity.Entity;
-import se.munhunger.workingTitle.util.QuadTree;
 
 /**
  * Globals class holds everything that should be considered global and visible
@@ -18,4 +17,9 @@ public class Globals
 	 * changes, then so should this reference
 	 */
 	public static QuadTree<Entity> worldRoot;
+	
+	/**
+	 * Notes how much to zoom the game graphic wise
+	 */
+	public static float zoom = 10f;
 }

@@ -32,6 +32,11 @@ public class SizedObject<T>
 	 * position of the outline and can be used for minute positioning
 	 */
 	private float y;
+	
+	/**
+	 * Rotation of object noted in radians
+	 */
+	private float rotation;
 	/**
 	 * The object that is being wrapped
 	 */
@@ -199,6 +204,14 @@ public class SizedObject<T>
 	}
 	
 	/**
+	 * @return the rotation of this object in radians
+	 */
+	public float getRotations()
+	{
+		return rotation;
+	}
+	
+	/**
 	 * @return this objects height
 	 */
 	public int getHeight()
@@ -302,6 +315,17 @@ public class SizedObject<T>
 	{
 		setX(x);
 		setY(y);
+	}
+	
+	/**
+	 * Sets the rotation of the object
+	 * 
+	 * @param rads
+	 *            rotation in radians
+	 */
+	public void setRotation(float rads)
+	{
+		rotation = rads;
 	}
 	
 	/**

@@ -1,8 +1,11 @@
 package se.munhunger.workingTitle.entity;
 
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 import se.munhunger.workingTitle.graphics.Paintable;
+import se.munhunger.workingTitle.util.Globals;
 import se.munhunger.workingTitle.util.QuadTree;
 import se.munhunger.workingTitle.util.SizedObject;
 
@@ -97,12 +100,24 @@ public class Entity implements Paintable
 	}
 	
 	@Override
-	public void paint(Graphics2D g2d, float xOffset, float yOffset, float zoom, boolean displace)
+	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
 	{
+		float zoom = Globals.zoom;
 		parts.getIntersect(parts.getBounds());
+		BufferedImage image = new BufferedImage((int) ((size.getWidth()+1) * zoom), (int) ((size.getHeight()+1) * zoom),
+				BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D imageGraphics = image.createGraphics();
 		for (SizedObject<Tile> t : parts.getIntersect(parts.getBounds()))
 		{
-			t.getObject().paint(g2d, xOffset+size.getXf(), yOffset+size.getYf(), zoom, displace);
+			t.getObject().paint(imageGraphics, 0, 0, displace);
 		}
+		AffineTransform at = new AffineTransform();
+		int x = (int) (size.getXf() + xOffset);
+		int y = (int) (size.getYf() + yOffset);
+		at.setToRotation(size.getRotations(), x+(image.getWidth() / 2), y+(image.getHeight() / 2));
+		at.translate(x, y);
+		g2d.setTransform(at);
+		g2d.drawImage(image, 0, 0, null);
+		g2d.dispose();
 	}
 }

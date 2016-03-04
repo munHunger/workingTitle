@@ -487,32 +487,10 @@ public class QuadTree<T> implements Paintable
 		return child.getObject();
 	}
 	
-	/**
-	 * Paints the quadtrees horizontal and vertical lines in it's appropriate
-	 * place in the world
-	 * This is mainly a debug option and should not be called in prod.
-	 * It will ignore any previous color settings of the graphics object, and it
-	 * will try to avoid side effects such as changing the color of the graphics
-	 * object.
-	 * It will paint the horizontal line green and the vertical line blue
-	 * The painting will be recursive down to leaf level
-	 * 
-	 * @param g2d
-	 *            the graphics object to use to paint with
-	 * @param xOffset
-	 *            the amount of pixels to offset this tile by in its' x
-	 *            coordinate
-	 * @param yOffset
-	 *            the amount of pixels to offset this tile by in its' y
-	 *            coordinate
-	 * @param zoom
-	 *            how many times to multiply the size of this tile. By default
-	 *            it is 1 pixel wide and 1 pixel high.
-	 * @param displace
-	 *            if true the zoom will displace its x and y position
-	 */
-	public void paint(Graphics2D g2d, float xOffset, float yOffset, float zoom, boolean displace)
+	@Override
+	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
 	{
+		float zoom = 1f;//Globals.zoom;
 		Color oldColor = g2d.getColor();
 		g2d.setColor(Color.GREEN);
 		g2d.drawLine((int) ((horizontalMidLine.getX1() + xOffset) * (displace ? zoom : 1)),
@@ -527,13 +505,13 @@ public class QuadTree<T> implements Paintable
 		g2d.setColor(oldColor);
 		
 		if (upperLeft.getObject() != null)
-			upperLeft.getObject().paint(g2d, xOffset, yOffset, zoom, displace);
+			upperLeft.getObject().paint(g2d, xOffset, yOffset, displace);
 		if (upperRight.getObject() != null)
-			upperRight.getObject().paint(g2d, xOffset, yOffset, zoom, displace);
+			upperRight.getObject().paint(g2d, xOffset, yOffset, displace);
 		if (lowerLeft.getObject() != null)
-			lowerLeft.getObject().paint(g2d, xOffset, yOffset, zoom, displace);
+			lowerLeft.getObject().paint(g2d, xOffset, yOffset, displace);
 		if (lowerRight.getObject() != null)
-			lowerRight.getObject().paint(g2d, xOffset, yOffset, zoom, displace);
+			lowerRight.getObject().paint(g2d, xOffset, yOffset, displace);
 	}
 	
 }
