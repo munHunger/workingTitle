@@ -1,5 +1,6 @@
 package se.munhunger.workingTitle.entity.ship;
 
+import se.munhunger.workingTitle.entity.Entity;
 import se.munhunger.workingTitle.entity.Tile;
 
 /**
@@ -11,17 +12,23 @@ import se.munhunger.workingTitle.entity.Tile;
 public class ShipBlock extends Tile
 {
 	/**
-	 * The health of this Armor block.
-	 * Goes from 0(dead) to 1(fully healed)
+	 * The health of this Armor block. Goes from 0(dead) to 1(fully healed)
 	 */
 	private float health = 1f;
 	
 	/**
-	 * The modifier for how much damage to take from a hit.
-	 * 0 being no damage taken and block is imortal.
-	 * 1 being full damage and block does not have any armor effects.
+	 * The modifier for how much damage to take from a hit. 0 being no damage
+	 * taken and block is imortal. 1 being full damage and block does not have
+	 * any armor effects.
 	 */
 	private float armorModifier = 0.25f;
+	
+	/**
+	 * The parent entity.
+	 * Can be used to find out the "real" position after rotating and moving the
+	 * entity
+	 */
+	protected Entity parent;
 	
 	/**
 	 * Basic constructor that creates a gray armor block
@@ -30,10 +37,13 @@ public class ShipBlock extends Tile
 	 *            the x position
 	 * @param y
 	 *            the y position
+	 * @param parent
+	 *            The holding entity
 	 */
-	public ShipBlock(int x, int y)
+	public ShipBlock(int x, int y, Entity parent)
 	{
 		super(x, y, 0.25f, 0.25f, 0.25f);
+		this.parent = parent;
 	}
 	
 	/**
@@ -49,11 +59,14 @@ public class ShipBlock extends Tile
 	 *            green component of the tiles color
 	 * @param b
 	 *            blue component of the tiles color
+	 * @param parent
+	 *            The holding entity
 	 * @throws IllegalArgumentException
 	 *             if r,g or b is not in the range 0<=component<=1
 	 */
-	protected ShipBlock(int x, int y, float r, float g, float b) throws IllegalArgumentException
+	public ShipBlock(int x, int y, float r, float g, float b, Entity parent) throws IllegalArgumentException
 	{
 		super(x, y, r, g, b);
+		this.parent = parent;
 	}
 }

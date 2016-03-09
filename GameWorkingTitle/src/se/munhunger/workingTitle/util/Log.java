@@ -7,10 +7,10 @@ import java.io.PrintWriter;
 import java.util.Calendar;
 
 /**
- * Logging utility that saves prints to a log file.
- * It can be configured to ignore or print different levels of messages.
- * It also has the ability to also print to standard out if so configured.
- * Exceptions should be caught and sent to this class
+ * Logging utility that saves prints to a log file. It can be configured to
+ * ignore or print different levels of messages. It also has the ability to also
+ * print to standard out if so configured. Exceptions should be caught and sent
+ * to this class
  * 
  * @author munhunger
  * 		
@@ -18,9 +18,8 @@ import java.util.Calendar;
 public class Log
 {
 	/**
-	 * All the possible log levels.
-	 * Each level notes how much to log.
-	 * So INFO will log everything while FATAL will log almost nothing
+	 * All the possible log levels. Each level notes how much to log. So INFO
+	 * will log everything while FATAL will log almost nothing
 	 * 
 	 * @author munhunger
 	 * 		
@@ -28,35 +27,43 @@ public class Log
 	private static enum LogLevel
 	{
 		/**
-		 * Info messages are messages that note what is currently going on in
-		 * the program. For example "Cleaning up world" or
-		 * "Generating new entities" These messages are meant as a debugging
-		 * tool for developers to get a feel of what is happening in the
-		 * program.
+		 * Debug messages are messages that note what is currently happening,
+		 * But are too frequently occurring for INFO. It is used to not flood
+		 * the
+		 * log with messages when using INFO
 		 */
-		INFO(1),
+		DEBUG(1),
+		/**
+		 * Info messages are messages that note what is currently
+		 * going on in the program. For example "Cleaning up world"
+		 * or "Generating new entities" These messages are meant as
+		 * a debugging tool for developers to get a feel of what is
+		 * happening in the program.
+		 */
+		INFO(2),
 		/**
 		 * 
-		 * Warning messages are messages that does not crash the program, but
-		 * are indicators that something might have gone wrong and should be
-		 * looked at when time exists.
+		 * Warning messages are messages that does not crash the
+		 * program, but are indicators that something might have
+		 * gone wrong and should be looked at when time exists.
 		 */
-		WARN(2),
+		WARN(4),
 		/**
 		 * 
-		 * Errors are classified as problems that is very likely to cause the
-		 * program to crash, or at least have serious faults.
+		 * Errors are classified as problems that is very likely to
+		 * cause the program to crash, or at least have serious
+		 * faults.
 		 */
-		ERROR(4),
+		ERROR(8),
 		/**
 		 * 
-		 * Fatal level errors are errors that causes the game to crash and is
-		 * such
-		 * an important part that there should be a number one priority to fix
-		 * whatever caused this error.
-		 * i.e. this is a drop everything else and work on this kind of problem
+		 * Fatal level errors are errors that causes the game to
+		 * crash and is such an important part that there should be
+		 * a number one priority to fix whatever caused this error.
+		 * i.e. this is a drop everything else and work on this kind
+		 * of problem
 		 */
-		FATAL(8);
+		FATAL(16);
 		
 		/**
 		 * The integer value of the level
@@ -88,12 +95,32 @@ public class Log
 	/**
 	 * The current log level. This will determine how much to print at runtime
 	 */
-	private static LogLevel logLevel = LogLevel.ERROR;
+	private static LogLevel logLevel = LogLevel.WARN;
 	
 	/**
 	 * Flag to determine whether or not to print to the standard system output
 	 */
 	private static boolean printToStandardOut = true;
+	
+	/**
+	 * Debug level message.
+	 * 
+	 * @see LogLevel#DEBUG
+	 * 		
+	 * @param message
+	 *            the message to write. This should be clear enough to note what
+	 *            went wrong and where.
+	 * @param context
+	 *            the object that is calling this class. Most likely this will
+	 *            be called with "this"
+	 */
+	public static void debug(String message, Object context)
+	{
+		if (logLevel.getLevel() <= LogLevel.DEBUG.getLevel())
+		{
+			printMessage(null, message, context, LogLevel.DEBUG);
+		}
+	}
 	
 	/**
 	 * Info level message.
@@ -120,9 +147,9 @@ public class Log
 	 * 
 	 * @see LogLevel#WARN
 	 * @param t
-	 *            the exception that might have been thrown.
-	 *            Note that this can be null, if the error message is to be
-	 *            shown without an exception being cast
+	 *            the exception that might have been thrown. Note that this can
+	 *            be null, if the error message is to be shown without an
+	 *            exception being cast
 	 * @param message
 	 *            the message to write. This should be clear enough to note what
 	 *            went wrong and where.
@@ -143,9 +170,9 @@ public class Log
 	 *
 	 * @see LogLevel#ERROR
 	 * @param t
-	 *            the exception that might have been thrown.
-	 *            Note that this can be null, if the error message is to be
-	 *            shown without an exception being cast
+	 *            the exception that might have been thrown. Note that this can
+	 *            be null, if the error message is to be shown without an
+	 *            exception being cast
 	 * @param message
 	 *            the message to write. This should be clear enough to note what
 	 *            went wrong and where.
@@ -166,9 +193,9 @@ public class Log
 	 * 
 	 * @see LogLevel#FATAL
 	 * @param t
-	 *            the exception that might have been thrown.
-	 *            Note that this can be null, if the error message is to be
-	 *            shown without an exception being cast
+	 *            the exception that might have been thrown. Note that this can
+	 *            be null, if the error message is to be shown without an
+	 *            exception being cast
 	 * @param message
 	 *            the message to write. This should be clear enough to note what
 	 *            went wrong and where.
@@ -185,13 +212,13 @@ public class Log
 	}
 	
 	/**
-	 * Prints the message.
-	 * It saves it to a file and writes it to standard out if configured
+	 * Prints the message. It saves it to a file and writes it to standard out
+	 * if configured
 	 * 
 	 * @param t
-	 *            the exception that might have been thrown.
-	 *            Note that this can be null, if the error message is to be
-	 *            shown without an exception being cast
+	 *            the exception that might have been thrown. Note that this can
+	 *            be null, if the error message is to be shown without an
+	 *            exception being cast
 	 * @param message
 	 *            the message to write. This should be clear enough to note what
 	 *            went wrong and where.
@@ -208,6 +235,9 @@ public class Log
 		builder.append("[");
 		switch (level)
 		{
+			case DEBUG:
+				builder.append("DEBUG");
+				break;
 			case INFO:
 				builder.append("INFO");
 				break;

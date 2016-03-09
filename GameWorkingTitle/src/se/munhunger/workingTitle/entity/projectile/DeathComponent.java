@@ -6,9 +6,13 @@ package se.munhunger.workingTitle.entity.projectile;
  * with a bang.
  * 
  * @author munhunger
- * 		
+ * 
  */
-public interface DeathComponent
+public interface DeathComponent extends ProjectileComponent
 {
-
+	/**
+	 * Function to call when the projectile has run out of energy and missed a
+	 * target
+	 */
+	public void die();
 }

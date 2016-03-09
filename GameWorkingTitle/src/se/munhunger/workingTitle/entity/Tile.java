@@ -3,16 +3,17 @@ package se.munhunger.workingTitle.entity;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import se.munhunger.workingTitle.graphics.BlockPainter;
 import se.munhunger.workingTitle.graphics.Paintable;
 import se.munhunger.workingTitle.util.Globals;
 import se.munhunger.workingTitle.util.SizedObject;
 
 /**
- * Represents the smallest part of the world.
- * These are the building blocks, the atoms!
+ * Represents the smallest part of the world. These are the building blocks, the
+ * atoms!
  * 
  * @author munhunger
- * 		
+ * 
  */
 public class Tile implements Paintable
 {
@@ -20,12 +21,12 @@ public class Tile implements Paintable
 	 * Wrapper to keep track of the size of this tile
 	 */
 	private SizedObject<Tile> size;
-	
+
 	/**
 	 * The color of this tile. It should be possible to draw this object
 	 */
 	private Color color;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -49,7 +50,7 @@ public class Tile implements Paintable
 		color = new Color(r, g, b);
 		size = new SizedObject<Tile>(this, x, y, 1, 1);
 	}
-	
+
 	/**
 	 * @return the size wrapper for this object
 	 */
@@ -57,15 +58,16 @@ public class Tile implements Paintable
 	{
 		return size;
 	}
-	
+
 	@Override
 	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
 	{
 		float zoom = Globals.zoom;
-		Color oldColor = g2d.getColor();
-		g2d.setColor(color);
-		g2d.fillRect((int)((size.getX() + xOffset) * (displace ? zoom : 1)), (int)((size.getY() + yOffset) * (displace ? zoom : 1)), (int)(1 * zoom), (int)(1 * zoom));
-		g2d.setColor(oldColor);
+		int x = (int) ((size.getX() + xOffset) * (displace ? zoom : 1));
+		int y = (int) ((size.getY() + yOffset) * (displace ? zoom : 1));
+		int width = (int) (1 * zoom);
+		int height = (int) (1 * zoom);
+		BlockPainter.paintBlock(g2d, x, y, width, height, color);
 	}
-	
+
 }

@@ -6,7 +6,11 @@ package se.munhunger.workingTitle.entity.projectile;
  * @author munhunger
  *		
  */
+@FunctionalInterface
 public interface HitComponent
 {
-
+	/**
+	 * Function to call when the projectile hits an entitiy
+	 */
+	public void hit();
 }

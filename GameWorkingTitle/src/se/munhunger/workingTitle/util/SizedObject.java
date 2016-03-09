@@ -5,8 +5,8 @@ import java.awt.geom.Line2D;
 
 /**
  * A wrapper for an object that adds the functionality of having a size in a
- * more physical manner. i.e. an object with a width and height.
- * It also has the added bonus of having a position.
+ * more physical manner. i.e. an object with a width and height. It also has the
+ * added bonus of having a position.
  * 
  * @author munhunger
  * 		
@@ -16,8 +16,8 @@ import java.awt.geom.Line2D;
 public class SizedObject<T>
 {
 	/**
-	 * Rectangle will Note the bounds of the object.
-	 * It holds all needed information such as x/y position and width/height
+	 * Rectangle will Note the bounds of the object. It holds all needed
+	 * information such as x/y position and width/height
 	 */
 	private Rectangle outline = null;
 	
@@ -60,6 +60,8 @@ public class SizedObject<T>
 	{
 		this.object = object;
 		outline = new Rectangle(x, y, width, height);
+		this.x = x;
+		this.y = y;
 	}
 	
 	/**
@@ -281,8 +283,8 @@ public class SizedObject<T>
 	
 	/**
 	 * Sets the x position of this object this should be close to the bounds x
-	 * position
-	 * It does also alter the position of the bounds to an integer rounded x
+	 * position It does also alter the position of the bounds to an integer
+	 * rounded x
 	 * 
 	 * @param x
 	 */
@@ -294,8 +296,8 @@ public class SizedObject<T>
 	
 	/**
 	 * Sets the y position of this object this should be close to the bounds y
-	 * position
-	 * It does also alter the position of the bounds to an integer rounded y
+	 * position It does also alter the position of the bounds to an integer
+	 * rounded y
 	 * 
 	 * @param y
 	 */
@@ -320,12 +322,12 @@ public class SizedObject<T>
 	/**
 	 * Sets the rotation of the object
 	 * 
-	 * @param rads
+	 * @param r
 	 *            rotation in radians
 	 */
-	public void setRotation(float rads)
+	public void setRotation(float r)
 	{
-		rotation = rads;
+		rotation = r;
 	}
 	
 	/**
@@ -348,5 +350,11 @@ public class SizedObject<T>
 	public Rectangle getBounds()
 	{
 		return outline;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("%f,%f %dx%d\t", x, y, getWidth(), getHeight()) + object;
 	}
 }
