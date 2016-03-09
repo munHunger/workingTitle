@@ -1,18 +1,17 @@
 package se.munhunger.workingTitle.entity.ship;
 
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import se.munhunger.workingTitle.entity.Entity;
 import se.munhunger.workingTitle.entity.Tile;
+import se.munhunger.workingTitle.entity.projectile.BasicFlight;
+import se.munhunger.workingTitle.entity.projectile.CompleteProjectile;
 import se.munhunger.workingTitle.entity.projectile.ProjectileController;
 import se.munhunger.workingTitle.util.Globals;
 import se.munhunger.workingTitle.util.Keyboard;
@@ -59,7 +58,6 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
 				{
 					getSize().setYf(getSize().getYf() - Keyboard.getTimeSinceLast(KeyEvent.VK_W) * speed);
-					Globals.yOffset += Keyboard.getTimeSinceLast(KeyEvent.VK_W) * speed;
 				});
 			});
 		});
@@ -70,7 +68,6 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
 				{
 					getSize().setYf(getSize().getYf() + Keyboard.getTimeSinceLast(KeyEvent.VK_S) * speed);
-					Globals.yOffset -= Keyboard.getTimeSinceLast(KeyEvent.VK_S) * speed;
 				});
 			});
 		});
@@ -81,7 +78,6 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
 				{
 					getSize().setXf(getSize().getXf() - Keyboard.getTimeSinceLast(KeyEvent.VK_A) * speed);
-					Globals.xOffset += Keyboard.getTimeSinceLast(KeyEvent.VK_A) * speed;
 				});
 			});
 		});
@@ -92,7 +88,6 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
 				{
 					getSize().setXf(getSize().getXf() + Keyboard.getTimeSinceLast(KeyEvent.VK_D) * speed);
-					Globals.xOffset -= Keyboard.getTimeSinceLast(KeyEvent.VK_D) * speed;
 				});
 			});
 		});
@@ -109,26 +104,23 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 		switch (type)
 		{
 			case WIDE:
-				parts = parts.add(new ShipBlock(0, 0, this).getSize());
-				parts = parts.add(new ShipBlock(0, 1, this).getSize());
-				parts = parts.add(new ShipBlock(1, 2, this).getSize());
-				parts = parts.add(new ShipBlock(2, 2, this).getSize());
-				parts = parts.add(new ShipBlock(3, 2, this).getSize());
-				parts = parts.add(new ShipBlock(4, 1, this).getSize());
-				parts = parts.add(new ShipBlock(4, 0, this).getSize());
-				parts = parts.add(new Weapon(1, 1, this).getSize());
-				parts = parts.add(new Weapon(3, 1, this).getSize());
-				parts = parts.add(new Generator(2, 1, this).getSize());
-				parts = parts.add(new Generator(2, 0, this).getSize());
+				parts = parts.add(new ShipBlock(0, 0).getSize());
+				parts = parts.add(new ShipBlock(0, 1).getSize());
+				parts = parts.add(new ShipBlock(1, 2).getSize());
+				parts = parts.add(new ShipBlock(2, 2).getSize());
+				parts = parts.add(new ShipBlock(3, 2).getSize());
+				parts = parts.add(new ShipBlock(4, 1).getSize());
+				parts = parts.add(new ShipBlock(4, 0).getSize());
+				parts = parts.add(new Weapon(1, 1).getSize());
+				parts = parts.add(new Weapon(3, 1).getSize());
 				break;
 			case SLIM:
-				parts = parts.add(new Weapon(1, 0, this).getSize());
-				parts = parts.add(new Generator(1, 1, this).getSize());
-				parts = parts.add(new ShipBlock(0, 1, this).getSize());
-				parts = parts.add(new ShipBlock(2, 1, this).getSize());
-				parts = parts.add(new ShipBlock(0, 2, this).getSize());
-				parts = parts.add(new ShipBlock(1, 2, this).getSize());
-				parts = parts.add(new ShipBlock(2, 2, this).getSize());
+				parts = parts.add(new Weapon(1, 0).getSize());
+				parts = parts.add(new ShipBlock(0, 1).getSize());
+				parts = parts.add(new ShipBlock(2, 1).getSize());
+				parts = parts.add(new ShipBlock(0, 2).getSize());
+				parts = parts.add(new ShipBlock(1, 2).getSize());
+				parts = parts.add(new ShipBlock(2, 2).getSize());
 				break;
 			default:
 				break;
@@ -143,29 +135,9 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 	{
 		for (SizedObject<Tile> t : parts.getIntersect(parts.getBounds()))
 		{
-			if (t.getObject() instanceof Weapon)
+			if(t.getObject() instanceof Weapon)
 			{
-				Weapon w = (Weapon) t.getObject();
-				float neededEnergy = w.energyRequired();
-				ArrayList<SimpleEntry<Generator, Float>> generatorDraws = new ArrayList<SimpleEntry<Generator, Float>>();
-				for (SizedObject<Tile> gen : parts
-						.getIntersect(new Rectangle(w.getSize().getX() - 1, w.getSize().getY() - 1, 3, 3)))
-					if (gen.getObject() instanceof Generator)
-					{
-						Generator g = (Generator) gen.getObject();
-						float draw = 0;
-						if (g.draw(neededEnergy))
-							draw = neededEnergy;
-						else
-							draw = g.drawMax();
-						generatorDraws.add(new SimpleEntry<Generator, Float>(g, new Float(draw)));
-						neededEnergy -= draw;
-					}
-				if (neededEnergy <= 0)
-					ProjectileController.addProjectile(w.getProjectile().getSize());
-				else
-					for (SimpleEntry<Generator, Float> e : generatorDraws)
-						e.getKey().refill(e.getValue().floatValue());
+				ProjectileController.addProjectile(new SizedObject<Entity>(((Weapon)t.getObject()).projectile, 10, 10, 1, 1));
 			}
 		}
 	}
@@ -202,8 +174,8 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 	@Override
 	public void mouseMoved(MouseEvent e)
 	{
-		float xDiff = e.getX() - (getSize().getX() + getSize().getWidth() / 2 + Globals.xOffset);
-		float yDiff = e.getY() - (getSize().getY() + getSize().getHeight() / 2 + Globals.yOffset);
+		float xDiff = e.getX() - (getSize().getX() + getSize().getWidth() / 2);
+		float yDiff = e.getY() - (getSize().getY() + getSize().getHeight() / 2);
 		
 		getSize().setRotation((float) (Math.atan2(-xDiff, yDiff) + Math.PI));
 	}

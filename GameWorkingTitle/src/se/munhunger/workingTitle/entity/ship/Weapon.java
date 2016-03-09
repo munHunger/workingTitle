@@ -48,6 +48,14 @@ public class Weapon extends ShipBlock
 	}
 	
 	/**
+	 * @return The amount of energy required to fire this weapon
+	 */
+	public float energyRequired()
+	{
+		return 2f;
+	}
+	
+	/**
 	 * Basic constructor that creates a plain Weapon block
 	 * 
 	 * @param x
