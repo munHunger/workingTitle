@@ -13,7 +13,7 @@ import java.util.Calendar;
  * to this class
  * 
  * @author munhunger
- * 		
+ * 
  */
 public class Log
 {
@@ -22,7 +22,7 @@ public class Log
 	 * will log everything while FATAL will log almost nothing
 	 * 
 	 * @author munhunger
-	 * 		
+	 * 
 	 */
 	private static enum LogLevel
 	{
@@ -74,9 +74,9 @@ public class Log
 		 * basic constructor
 		 * 
 		 * @param level
-		 *            will be used in comparison between levels. A high level
-		 *            means that it will be printed more often than a low level
-		 *            log
+		 * will be used in comparison between levels. A high level
+		 * means that it will be printed more often than a low level
+		 * log
 		 */
 		private LogLevel(int level)
 		{
@@ -95,7 +95,7 @@ public class Log
 	/**
 	 * The current log level. This will determine how much to print at runtime
 	 */
-	private static LogLevel logLevel = LogLevel.WARN;
+	private static LogLevel logLevel = LogLevel.ERROR;
 	
 	/**
 	 * Flag to determine whether or not to print to the standard system output
@@ -106,13 +106,13 @@ public class Log
 	 * Debug level message.
 	 * 
 	 * @see LogLevel#DEBUG
-	 * 		
+	 * 
 	 * @param message
-	 *            the message to write. This should be clear enough to note what
-	 *            went wrong and where.
+	 * the message to write. This should be clear enough to note what
+	 * went wrong and where.
 	 * @param context
-	 *            the object that is calling this class. Most likely this will
-	 *            be called with "this"
+	 * the object that is calling this class. Most likely this will
+	 * be called with "this"
 	 */
 	public static void debug(String message, Object context)
 	{
@@ -126,13 +126,13 @@ public class Log
 	 * Info level message.
 	 * 
 	 * @see LogLevel#INFO
-	 * 		
+	 * 
 	 * @param message
-	 *            the message to write. This should be clear enough to note what
-	 *            went wrong and where.
+	 * the message to write. This should be clear enough to note what
+	 * went wrong and where.
 	 * @param context
-	 *            the object that is calling this class. Most likely this will
-	 *            be called with "this"
+	 * the object that is calling this class. Most likely this will
+	 * be called with "this"
 	 */
 	public static void info(String message, Object context)
 	{
@@ -147,15 +147,15 @@ public class Log
 	 * 
 	 * @see LogLevel#WARN
 	 * @param t
-	 *            the exception that might have been thrown. Note that this can
-	 *            be null, if the error message is to be shown without an
-	 *            exception being cast
+	 * the exception that might have been thrown. Note that this can
+	 * be null, if the error message is to be shown without an
+	 * exception being cast
 	 * @param message
-	 *            the message to write. This should be clear enough to note what
-	 *            went wrong and where.
+	 * the message to write. This should be clear enough to note what
+	 * went wrong and where.
 	 * @param context
-	 *            the object that is calling this class. Most likely this will
-	 *            be called with "this"
+	 * the object that is calling this class. Most likely this will
+	 * be called with "this"
 	 */
 	public static void warn(Throwable t, String message, Object context)
 	{
@@ -170,15 +170,15 @@ public class Log
 	 *
 	 * @see LogLevel#ERROR
 	 * @param t
-	 *            the exception that might have been thrown. Note that this can
-	 *            be null, if the error message is to be shown without an
-	 *            exception being cast
+	 * the exception that might have been thrown. Note that this can
+	 * be null, if the error message is to be shown without an
+	 * exception being cast
 	 * @param message
-	 *            the message to write. This should be clear enough to note what
-	 *            went wrong and where.
+	 * the message to write. This should be clear enough to note what
+	 * went wrong and where.
 	 * @param context
-	 *            the object that is calling this class. Most likely this will
-	 *            be called with "this"
+	 * the object that is calling this class. Most likely this will
+	 * be called with "this"
 	 */
 	public static void error(Throwable t, String message, Object context)
 	{
@@ -193,15 +193,15 @@ public class Log
 	 * 
 	 * @see LogLevel#FATAL
 	 * @param t
-	 *            the exception that might have been thrown. Note that this can
-	 *            be null, if the error message is to be shown without an
-	 *            exception being cast
+	 * the exception that might have been thrown. Note that this can
+	 * be null, if the error message is to be shown without an
+	 * exception being cast
 	 * @param message
-	 *            the message to write. This should be clear enough to note what
-	 *            went wrong and where.
+	 * the message to write. This should be clear enough to note what
+	 * went wrong and where.
 	 * @param context
-	 *            the object that is calling this class. Most likely this will
-	 *            be called with "this"
+	 * the object that is calling this class. Most likely this will
+	 * be called with "this"
 	 */
 	public static void fatal(Throwable t, String message, Object context)
 	{
@@ -216,18 +216,18 @@ public class Log
 	 * if configured
 	 * 
 	 * @param t
-	 *            the exception that might have been thrown. Note that this can
-	 *            be null, if the error message is to be shown without an
-	 *            exception being cast
+	 * the exception that might have been thrown. Note that this can
+	 * be null, if the error message is to be shown without an
+	 * exception being cast
 	 * @param message
-	 *            the message to write. This should be clear enough to note what
-	 *            went wrong and where.
+	 * the message to write. This should be clear enough to note what
+	 * went wrong and where.
 	 * @param context
-	 *            the object that is calling this class. Most likely this will
-	 *            be called with "this"
+	 * the object that is calling this class. Most likely this will
+	 * be called with "this"
 	 * @param level
-	 *            the log level that this was called from. This will note the
-	 *            severity of the problem
+	 * the log level that this was called from. This will note the
+	 * severity of the problem
 	 */
 	private static void printMessage(Throwable t, String message, Object context, LogLevel level)
 	{

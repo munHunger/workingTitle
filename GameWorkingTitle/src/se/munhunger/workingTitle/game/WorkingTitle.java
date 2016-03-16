@@ -12,6 +12,7 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import se.munhunger.workingTitle.entity.Asteroid;
 import se.munhunger.workingTitle.entity.Entity;
 import se.munhunger.workingTitle.entity.ship.Ship;
 import se.munhunger.workingTitle.graphics.BackDrop;
@@ -31,34 +32,36 @@ public class WorkingTitle
 	 * Main loop
 	 * 
 	 * @param args
-	 *            no args are used
+	 * no args are used
 	 */
 	public static void main(String[] args)
 	{
 		new WorkingTitle();
 	}
-
+	
 	/**
 	 * constructor that launches everything important
 	 */
 	public WorkingTitle()
 	{
 		Globals.worldRoot = new QuadTree<Entity>(0, 0, 512, 512);
-
+		
 		Entity spaceShip = new Ship(Ship.ShipType.WIDE);
-
+		
 		Globals.worldRoot = Globals.worldRoot.add(spaceShip.getSize());
-
+		
+		Globals.worldRoot = Globals.worldRoot.add(new Asteroid(100, 100).getSize());
+		
 		JFrame frame = new JFrame("Working Title");
 		final BackDrop backDrop = new BackDrop();
 		JPanel panel = new JPanel()
 		{
-
+			
 			/**
 			 * Serial version
 			 */
 			private static final long serialVersionUID = 1L;
-
+			
 			@Override
 			public void paintComponent(Graphics g)
 			{
@@ -72,7 +75,7 @@ public class WorkingTitle
 					// System.out.println(t);
 					t.getObject().paint((Graphics2D) g, Globals.xOffset, Globals.yOffset, true);
 				}
-
+				
 				try
 				{
 					Thread.sleep(10);
@@ -92,33 +95,33 @@ public class WorkingTitle
 		panel.grabFocus();
 		panel.addComponentListener(new ComponentListener()
 		{
-
+			
 			@Override
 			public void componentShown(ComponentEvent e)
 			{
 				// TODO Auto-generated method stub
-
+				
 			}
-
+			
 			@Override
 			public void componentResized(ComponentEvent e)
 			{
 				Globals.xOffset = e.getComponent().getWidth() / 2;
 				Globals.yOffset = e.getComponent().getHeight() / 2;
 			}
-
+			
 			@Override
 			public void componentMoved(ComponentEvent e)
 			{
 				// TODO Auto-generated method stub
-
+				
 			}
-
+			
 			@Override
 			public void componentHidden(ComponentEvent e)
 			{
 				// TODO Auto-generated method stub
-
+				
 			}
 		});
 		frame.add(panel);

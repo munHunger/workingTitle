@@ -4,7 +4,7 @@ package se.munhunger.workingTitle.entity.projectile;
  * Basic death component
  * 
  * @author munhunger
- * 		
+ * 
  */
 public class ClusterDeath implements DeathComponent
 {
@@ -28,7 +28,7 @@ public class ClusterDeath implements DeathComponent
 	 * Basic constructor
 	 * 
 	 * @param cp
-	 *            the parent projectile
+	 * the parent projectile
 	 */
 	public ClusterDeath(CompleteProjectile cp)
 	{

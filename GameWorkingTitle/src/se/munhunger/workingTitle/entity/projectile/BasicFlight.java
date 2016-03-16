@@ -8,7 +8,7 @@ import se.munhunger.workingTitle.util.SizedObject;
  * A basic flight projectile, just moving forward and doing nothing special
  * 
  * @author munhunger
- * 		
+ * 
  */
 public class BasicFlight implements FlightComponent
 {
@@ -35,9 +35,9 @@ public class BasicFlight implements FlightComponent
 	 * values
 	 * 
 	 * @param energy
-	 *            {@link #energy}
+	 * {@link #energy}
 	 * @param speed
-	 *            {@link #speed}
+	 * {@link #speed}
 	 */
 	public BasicFlight(float energy, float speed)
 	{

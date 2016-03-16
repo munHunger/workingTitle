@@ -2,10 +2,12 @@ package se.munhunger.workingTitle.entity.projectile;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import se.munhunger.workingTitle.entity.Entity;
+import se.munhunger.workingTitle.entity.ship.Ship;
 import se.munhunger.workingTitle.entity.ship.ShipBlock;
 import se.munhunger.workingTitle.graphics.BlockPainter;
 import se.munhunger.workingTitle.util.Log;
@@ -15,7 +17,7 @@ import se.munhunger.workingTitle.util.SizedObject;
  * Notes a projectile that have all the needed parts to create a projectile.
  * 
  * @author munhunger
- * 		
+ * 
  */
 public abstract class CompleteProjectile extends Entity
 {
@@ -23,7 +25,7 @@ public abstract class CompleteProjectile extends Entity
 	 * The projectile state. Will note what action to take each tick
 	 * 
 	 * @author munhunger
-	 *		
+	 * 
 	 */
 	public enum State
 	{
@@ -81,6 +83,11 @@ public abstract class CompleteProjectile extends Entity
 	}
 	
 	/**
+	 * The ship that fired this projectile
+	 */
+	public Ship from;
+	
+	/**
 	 * Components that should be triggered when the projectile is spawned
 	 */
 	public Collection<FireComponent> fireComponents = new ArrayList<FireComponent>();
@@ -112,9 +119,17 @@ public abstract class CompleteProjectile extends Entity
 	{
 		super.paint(g2d, xOffset, yOffset, displace);
 		SizedObject<?> size = getSize();
+		AffineTransform oldAT = g2d.getTransform();
+		AffineTransform at = new AffineTransform();
+		int x = (int) (size.getXf() + xOffset);
+		int y = (int) (size.getYf() + yOffset);
+		at.setToRotation(size.getRotations(), x + (5), y + (5));
+		at.translate(x, y);
+		g2d.setTransform(at);
 		double period = (size.getXf() + size.getYf()) / 20;
 		for (int i = 2; i < 7; i++)
 			BlockPainter.paintBlock(g2d, (int) (Math.sin(period + i * 2) * 15), i * 15, 5 / (i / 2), 5 / (i / 2),
 					new Color(0.1f, 0.6f, 0.8f));
+		g2d.setTransform(oldAT);
 	}
 }

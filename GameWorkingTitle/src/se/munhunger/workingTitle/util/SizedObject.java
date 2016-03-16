@@ -9,9 +9,9 @@ import java.awt.geom.Line2D;
  * added bonus of having a position.
  * 
  * @author munhunger
- * 		
+ * 
  * @param <T>
- *            the type of the wrapped object
+ * the type of the wrapped object
  */
 public class SizedObject<T>
 {
@@ -46,15 +46,15 @@ public class SizedObject<T>
 	 * Constructor
 	 * 
 	 * @param object
-	 *            the object to wrap
+	 * the object to wrap
 	 * @param x
-	 *            x-coordinate
+	 * x-coordinate
 	 * @param y
-	 *            y-coordinate
+	 * y-coordinate
 	 * @param width
-	 *            the width of the object
+	 * the width of the object
 	 * @param height
-	 *            the height of the object
+	 * the height of the object
 	 */
 	public SizedObject(T object, int x, int y, int width, int height)
 	{
@@ -68,9 +68,9 @@ public class SizedObject<T>
 	 * Checks if this object contains other
 	 * 
 	 * @param other
-	 *            the object to check against
+	 * the object to check against
 	 * @return true iff this SizedObject completely envelops the other
-	 *         SizedObject
+	 * SizedObject
 	 */
 	public boolean contains(SizedObject<?> other)
 	{
@@ -81,7 +81,7 @@ public class SizedObject<T>
 	 * Checks if this objects contains the rectangle
 	 * 
 	 * @param bounds
-	 *            the rectangle to check
+	 * the rectangle to check
 	 * @return true iff this object completely envelops the bounds object
 	 */
 	public boolean contains(Rectangle bounds)
@@ -93,9 +93,9 @@ public class SizedObject<T>
 	 * Checks if this object contains the point with the coordinates x,y
 	 * 
 	 * @param x
-	 *            x-coordinate
+	 * x-coordinate
 	 * @param y
-	 *            y-coordinate
+	 * y-coordinate
 	 * @return true iff this objects contains the x,y coordinate
 	 */
 	public boolean contains(int x, int y)
@@ -107,9 +107,9 @@ public class SizedObject<T>
 	 * Checks if this object is intersected by other
 	 * 
 	 * @param other
-	 *            the object to check against
+	 * the object to check against
 	 * @return true iff this object is intersected by other, i.e. if they have
-	 *         any point in common.
+	 * any point in common.
 	 */
 	public boolean intersects(SizedObject<?> other)
 	{
@@ -120,9 +120,9 @@ public class SizedObject<T>
 	 * Checks if this object is intersected by bounds
 	 * 
 	 * @param bounds
-	 *            the object to check against
+	 * the object to check against
 	 * @return true iff this object is intersected by bounds, i.e. if they have
-	 *         any point in common.
+	 * any point in common.
 	 */
 	public boolean intersects(Rectangle bounds)
 	{
@@ -166,7 +166,7 @@ public class SizedObject<T>
 	 * Sets the wrapped object
 	 * 
 	 * @param object
-	 *            the object to set
+	 * the object to set
 	 */
 	public void setObject(T object)
 	{
@@ -268,6 +268,7 @@ public class SizedObject<T>
 	 */
 	public void setX(int x)
 	{
+		this.x = x;
 		outline.x = x;
 	}
 	
@@ -278,6 +279,7 @@ public class SizedObject<T>
 	 */
 	public void setY(int y)
 	{
+		this.y = y;
 		outline.y = y;
 	}
 	
@@ -323,7 +325,7 @@ public class SizedObject<T>
 	 * Sets the rotation of the object
 	 * 
 	 * @param r
-	 *            rotation in radians
+	 * rotation in radians
 	 */
 	public void setRotation(float r)
 	{

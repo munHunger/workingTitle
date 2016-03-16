@@ -10,7 +10,7 @@ import se.munhunger.workingTitle.util.Globals;
  * Denotes a basic weapon block that can possibly fire lasers?
  * 
  * @author munhunger
- * 		
+ * 
  */
 public class Weapon extends ShipBlock
 {
@@ -37,6 +37,7 @@ public class Weapon extends ShipBlock
 				fireComponents.add(new BasicFire());
 				flightComponents.add(new BasicFlight(0.7f, 4f));
 				deathComponents.add(new ClusterDeath(this));
+				from = (Ship) parent;
 			}
 		};
 		projectile.getSize().setXf((float) (parent.getSize().getXf()
@@ -59,11 +60,11 @@ public class Weapon extends ShipBlock
 	 * Basic constructor that creates a plain Weapon block
 	 * 
 	 * @param x
-	 *            the x position
+	 * the x position
 	 * @param y
-	 *            the y position
+	 * the y position
 	 * @param parent
-	 *            holding ship entity
+	 * holding ship entity
 	 */
 	public Weapon(int x, int y, Ship parent)
 	{

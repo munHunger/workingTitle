@@ -16,7 +16,7 @@ import se.munhunger.workingTitle.util.SizedObject;
  * Controll class that makes sure that all projectiles are handled correctly
  * 
  * @author munhunger
- * 		
+ * 
  */
 public class ProjectileController
 {
@@ -72,6 +72,19 @@ public class ProjectileController
 									else
 										cp.advance();
 								}
+								Collection<SizedObject<Entity>> intersect = Globals.worldRoot
+										.getIntersect(projectile.getBounds());
+								for (SizedObject<Entity> entity : intersect)
+								{
+									if (!(entity.getObject() instanceof CompleteProjectile)
+											&& entity.getObject() != cp.from)
+										cp.currentState = CompleteProjectile.State.HIT;
+								}
+								// if
+								// (Globals.worldRoot.getIntersect(projectile.getBounds()).size()
+								// > 1)
+								// cp.currentState =
+								// CompleteProjectile.State.HIT;
 								break;
 							case HIT:
 								if (cp.hitComponents.isEmpty())
@@ -128,7 +141,7 @@ public class ProjectileController
 	 * Adds a projectile to the controller
 	 * 
 	 * @param projectile
-	 *            The projectile to handle
+	 * The projectile to handle
 	 */
 	public static void addProjectile(SizedObject<Entity> projectile)
 	{
