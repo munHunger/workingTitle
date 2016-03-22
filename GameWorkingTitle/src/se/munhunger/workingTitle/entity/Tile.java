@@ -13,7 +13,7 @@ import se.munhunger.workingTitle.util.SizedObject;
  * atoms!
  * 
  * @author munhunger
- * 
+ * 		
  */
 public class Tile implements Paintable
 {
@@ -21,12 +21,13 @@ public class Tile implements Paintable
 	 * Wrapper to keep track of the size of this tile
 	 */
 	private SizedObject<Tile> size;
-
+	
 	/**
 	 * The color of this tile. It should be possible to draw this object
 	 */
-	private Color color;
-
+	public Color color; // TODO change to private. this is public for debugging
+						// purpose
+	
 	/**
 	 * Constructor
 	 * 
@@ -48,9 +49,9 @@ public class Tile implements Paintable
 		if (r < 0 || r > 1 || g < 0 || g > 1 || b < 0 || b > 1)
 			throw new IllegalArgumentException("Color is out of range, should be in the range [0,1]");
 		color = new Color(r, g, b);
-		size = new SizedObject<Tile>(this, x, y, 1, 1);
+		size = new SizedObject<Tile>(this, x, y, (int) Globals.zoom, (int) Globals.zoom);
 	}
-
+	
 	/**
 	 * @return the size wrapper for this object
 	 */
@@ -58,16 +59,15 @@ public class Tile implements Paintable
 	{
 		return size;
 	}
-
+	
 	@Override
 	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
 	{
-		float zoom = Globals.zoom;
-		int x = (int) ((size.getX() + xOffset) * (displace ? zoom : 1));
-		int y = (int) ((size.getY() + yOffset) * (displace ? zoom : 1));
-		int width = (int) (1 * zoom);
-		int height = (int) (1 * zoom);
+		int x = (int) ((size.getX() + xOffset) * (displace ? Globals.zoom : 1));
+		int y = (int) ((size.getY() + yOffset) * (displace ? Globals.zoom : 1));
+		int width = size.getWidth();
+		int height = size.getHeight();
 		BlockPainter.paintBlock(g2d, x, y, width, height, color);
 	}
-
+	
 }

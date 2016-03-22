@@ -47,6 +47,20 @@ public class ShipBlock extends Tile
 	}
 	
 	/**
+	 * Damages this tile.
+	 * It's armor modifier will be applied to the damage
+	 * 
+	 * @param damage
+	 *            the amount of damage to deal
+	 * @return true if the tile is "dead" i.e. health below 0
+	 */
+	public boolean damage(float damage)
+	{
+		health -= damage * armorModifier;
+		return health < 0f;
+	}
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param x

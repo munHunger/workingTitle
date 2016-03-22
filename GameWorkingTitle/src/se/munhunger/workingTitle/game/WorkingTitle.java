@@ -24,7 +24,7 @@ import se.munhunger.workingTitle.util.SizedObject;
  * Main game class. This is the starting point of the game
  * 
  * @author munhunger
- * 
+ * 		
  */
 public class WorkingTitle
 {
@@ -32,7 +32,7 @@ public class WorkingTitle
 	 * Main loop
 	 * 
 	 * @param args
-	 * no args are used
+	 *            no args are used
 	 */
 	public static void main(String[] args)
 	{
@@ -51,6 +51,8 @@ public class WorkingTitle
 		Globals.worldRoot = Globals.worldRoot.add(spaceShip.getSize());
 		
 		Globals.worldRoot = Globals.worldRoot.add(new Asteroid(100, 100).getSize());
+		Globals.worldRoot = Globals.worldRoot.add(new Asteroid(200, -256).getSize());
+		Globals.worldRoot = Globals.worldRoot.add(new Asteroid(-250, 0).getSize());
 		
 		JFrame frame = new JFrame("Working Title");
 		final BackDrop backDrop = new BackDrop();

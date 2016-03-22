@@ -8,6 +8,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import se.munhunger.workingTitle.core.WorkManager;
 import se.munhunger.workingTitle.entity.Entity;
+import se.munhunger.workingTitle.entity.Tile;
+import se.munhunger.workingTitle.entity.ship.ShipBlock;
 import se.munhunger.workingTitle.util.Globals;
 import se.munhunger.workingTitle.util.Log;
 import se.munhunger.workingTitle.util.SizedObject;
@@ -16,7 +18,7 @@ import se.munhunger.workingTitle.util.SizedObject;
  * Controll class that makes sure that all projectiles are handled correctly
  * 
  * @author munhunger
- * 
+ * 		
  */
 public class ProjectileController
 {
@@ -78,13 +80,33 @@ public class ProjectileController
 								{
 									if (!(entity.getObject() instanceof CompleteProjectile)
 											&& entity.getObject() != cp.from)
-										cp.currentState = CompleteProjectile.State.HIT;
+									{
+										Collection<SizedObject<Tile>> hitTiles = cp.getParts().getIntersect(
+												projectile.getRotations(), projectile.getWidth() / 2f,
+												projectile.getHeight() / 2f, entity.getObject().getParts(), 1,
+												entity.getRotations(), entity.getXf() - projectile.getXf(),
+												entity.getYf() - projectile.getYf(),
+												entity.getXf() + entity.getWidth() / 2 - projectile.getXf(),
+												entity.getYf() + entity.getHeight() / 2 - projectile.getYf());
+										for (SizedObject<Tile> t : hitTiles)
+										{
+											if (t.getObject() instanceof ShipBlock)
+											{
+												ShipBlock block = (ShipBlock) t.getObject();
+												for (FlightComponent fl : cp.flightComponents)
+													if (block.damage(fl.getEnergy() * 5f))
+													{
+														cp.from.addText("+1 kill");
+														entity.getObject().getParts().remove(t, true);
+														break;
+													}
+											}
+											t.getObject().color = t.getObject().color.darker();
+										}
+										if (!hitTiles.isEmpty())
+											cp.currentState = CompleteProjectile.State.HIT;
+									}
 								}
-								// if
-								// (Globals.worldRoot.getIntersect(projectile.getBounds()).size()
-								// > 1)
-								// cp.currentState =
-								// CompleteProjectile.State.HIT;
 								break;
 							case HIT:
 								if (cp.hitComponents.isEmpty())
@@ -141,7 +163,7 @@ public class ProjectileController
 	 * Adds a projectile to the controller
 	 * 
 	 * @param projectile
-	 * The projectile to handle
+	 *            The projectile to handle
 	 */
 	public static void addProjectile(SizedObject<Entity> projectile)
 	{

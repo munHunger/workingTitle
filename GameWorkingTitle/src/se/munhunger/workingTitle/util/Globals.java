@@ -36,5 +36,5 @@ public class Globals
 	 * Random object. Should be used for all random needs. This is usefull, as
 	 * it can take a seed
 	 */
-	public static Random random = new Random(1337L);
+	public static Random random = new Random(42L);
 }

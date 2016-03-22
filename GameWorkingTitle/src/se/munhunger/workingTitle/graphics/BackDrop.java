@@ -12,7 +12,7 @@ import se.munhunger.workingTitle.util.Globals;
  * Background space!
  * 
  * @author munhunger
- *		
+ * 		
  */
 public class BackDrop implements Paintable
 {
@@ -30,7 +30,7 @@ public class BackDrop implements Paintable
 	{
 		for (int i = 0; i < backDrops.length; i++)
 		{
-			backDrops[i] = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB);
+			backDrops[i] = new BufferedImage(1025, 1025, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D imageGraphics = backDrops[i].createGraphics();
 			
 			for (int n = 0; n < Math.pow(7, i + 1); n++)

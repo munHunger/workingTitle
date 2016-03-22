@@ -3,6 +3,8 @@ package se.munhunger.workingTitle.util;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,9 +28,9 @@ import se.munhunger.workingTitle.physics.PhysicsEngine;
  * more than desired
  * 
  * @author munhunger
- * 
+ * 		
  * @param <T>
- * the type of objects to store
+ *            the type of objects to store
  */
 public class QuadTree<T> implements Paintable
 {
@@ -94,17 +96,17 @@ public class QuadTree<T> implements Paintable
 	 * Creates a new empty QuadTree
 	 * 
 	 * @param x
-	 * the x-position of its upper left corner
+	 *            the x-position of its upper left corner
 	 * @param y
-	 * the y-position of its upper left corner
+	 *            the y-position of its upper left corner
 	 * @param width
-	 * the width of the QuadTree
+	 *            the width of the QuadTree
 	 * @param height
-	 * the height of the QuadTree
+	 *            the height of the QuadTree
 	 * @throws IllegalArgumentException
-	 * If the width or height are negative or not a perfect base 2
-	 * size, which is needed since the tree is working on pure
-	 * integers and without base 2 it might miss some edge cases.
+	 *             If the width or height are negative or not a perfect base 2
+	 *             size, which is needed since the tree is working on pure
+	 *             integers and without base 2 it might miss some edge cases.
 	 */
 	public QuadTree(int x, int y, int width, int height) throws IllegalArgumentException
 	{
@@ -131,15 +133,15 @@ public class QuadTree<T> implements Paintable
 	 * Creates a new empty quadtree with a set parent
 	 * 
 	 * @param x
-	 * the x-position of its upper left corner
+	 *            the x-position of its upper left corner
 	 * @param y
-	 * the y-position of its upper left corner
+	 *            the y-position of its upper left corner
 	 * @param width
-	 * the width of the QuadTree
+	 *            the width of the QuadTree
 	 * @param height
-	 * the height of the QuadTree
+	 *            the height of the QuadTree
 	 * @param parent
-	 * the parent tree
+	 *            the parent tree
 	 */
 	private QuadTree(int x, int y, int width, int height, QuadTree<T> parent)
 	{
@@ -169,11 +171,71 @@ public class QuadTree<T> implements Paintable
 	 * Checks if this quadtree is empty
 	 * 
 	 * @return true iff there are no elements in this tree or in any of its
-	 * child nodes.
+	 *         child nodes.
 	 */
 	public boolean isEmpty()
 	{
 		return size < 1;
+	}
+	
+	/**
+	 * @param thisRotation
+	 *            The rotation of this tree in radians.
+	 * @param thisX
+	 *            center x coordinate of this QuadTree in relation to the
+	 *            upper left of this QuadTree
+	 * @param thisY
+	 *            center y coordinate of this QuadTree in relation to the
+	 *            upper left of this QuadTree
+	 * @param other
+	 *            The tree to compare with
+	 * @param otherSize
+	 *            the size difference for other. i.e. scale it up or down
+	 * @param otherRotation
+	 *            the rotation of the other tree in comparison to this, in
+	 *            radians.
+	 * @param otherX
+	 *            The x coordinate of the upper left corner of the other tree in
+	 *            relation to the upper left of this QuadTree
+	 * @param otherY
+	 *            The y coordinate of the upper left corner of the other tree in
+	 *            relation to the upper left of this QuadTree
+	 * @param otherWidth
+	 *            center x coordinate of the other QuadTree in relation to the
+	 *            upper left of this QuadTree
+	 * @param otherHeight
+	 *            center y coordinate of the other QuadTree in relation to the
+	 *            upper left of this QuadTree
+	 * @return A collection of points that are in this tree that is colliding
+	 *         with other.
+	 */
+	public Collection<SizedObject<T>> getIntersect(float thisRotation, float thisX, float thisY, QuadTree<T> other,
+			float otherSize, float otherRotation, float otherX, float otherY, float otherWidth, float otherHeight)
+	{
+		Area area = new Area();
+		Collection<SizedObject<T>> allCurrent = getAll();
+		for (SizedObject<T> s : allCurrent)
+			area.add(new Area(s.getBounds()));
+		AffineTransform af = new AffineTransform();
+		af.rotate(thisRotation, thisX, thisY);
+		area = area.createTransformedArea(af);
+		
+		Collection<SizedObject<T>> otherCollection = other.getAll();
+		Collection<SizedObject<T>> returnCollection = new ArrayList<>();
+		for (SizedObject<T> ref : otherCollection)
+		{
+			Rectangle bound = (Rectangle) ref.getBounds().clone();
+			bound.x = (int) (bound.x * Globals.zoom + otherX);
+			bound.y = (int) (bound.y * Globals.zoom + otherY);
+			Area a = new Area(bound);
+			af = new AffineTransform();
+			af.rotate(otherRotation, otherWidth, otherHeight);
+			a = a.createTransformedArea(af);
+			a.intersect(area);
+			if (!a.isEmpty())
+				returnCollection.add(ref);
+		}
+		return returnCollection;
 	}
 	
 	/**
@@ -182,9 +244,9 @@ public class QuadTree<T> implements Paintable
 	 * searches in parent nodes if required
 	 * 
 	 * @param searchArea
-	 * the area to search in
+	 *            the area to search in
 	 * @return a collection of all sized of all objects that intersects the
-	 * searcharea
+	 *         searcharea
 	 */
 	public Collection<SizedObject<T>> getIntersect(Rectangle searchArea) // TODO
 																			// This
@@ -236,9 +298,9 @@ public class QuadTree<T> implements Paintable
 	 * Note that this function also searches in parent nodes if required
 	 * 
 	 * @param searchArea
-	 * the area to search in
+	 *            the area to search in
 	 * @return a collection of all sized of all objects that intersects the
-	 * searcharea
+	 *         searcharea
 	 */
 	public Collection<SizedObject<T>> getContained(Rectangle searchArea)
 	{
@@ -269,13 +331,13 @@ public class QuadTree<T> implements Paintable
 	 * new location can be the same part of the tree
 	 * 
 	 * @param element
-	 * object to move
+	 *            object to move
 	 * @param mover
-	 * A runnable object that will perform the actual movement. i.e.
-	 * this will change the x/y coordinates of the element
+	 *            A runnable object that will perform the actual movement. i.e.
+	 *            this will change the x/y coordinates of the element
 	 * @return The new(or possibly old) quadtree root
 	 * @throws IllegalArgumentException
-	 * if the object is not contained in the tree
+	 *             if the object is not contained in the tree
 	 */
 	public QuadTree<T> updateObjectPosition(SizedObject<T> element, Runnable mover) throws IllegalArgumentException
 	{
@@ -290,11 +352,11 @@ public class QuadTree<T> implements Paintable
 	 * node
 	 * 
 	 * @param element
-	 * the element to search for, and to remove
+	 *            the element to search for, and to remove
 	 * @param strict
-	 * if true the search will get objects that are the exact same
-	 * reference. If false, it will take the first object that is
-	 * equal to element
+	 *            if true the search will get objects that are the exact same
+	 *            reference. If false, it will take the first object that is
+	 *            equal to element
 	 * @return true if an element was removed, false otherwise
 	 */
 	public boolean remove(SizedObject<T> element, boolean strict)
@@ -389,7 +451,7 @@ public class QuadTree<T> implements Paintable
 	 * as it can grow uncontrollably if not used properly
 	 * 
 	 * @param element
-	 * the element to add
+	 *            the element to add
 	 * @return the root of the tree. This may or may not be a new root.
 	 */
 	public QuadTree<T> add(SizedObject<T> element)
@@ -408,12 +470,12 @@ public class QuadTree<T> implements Paintable
 	 * Adds the element to the tree. If a new root is needed it will be created.
 	 * 
 	 * @param element
-	 * the element to add
+	 *            the element to add
 	 * @param root
-	 * the root of the tree. It's parent should always be null
+	 *            the root of the tree. It's parent should always be null
 	 * @return the root of the tree
 	 * @throws IllegalArgumentException
-	 * if the root argument was not the absolute root of the tree
+	 *             if the root argument was not the absolute root of the tree
 	 */
 	private QuadTree<T> add(SizedObject<T> element, QuadTree<T> root) throws IllegalArgumentException
 	{
@@ -508,7 +570,7 @@ public class QuadTree<T> implements Paintable
 	 * Creates the child object node if such a node is missing
 	 * 
 	 * @param child
-	 * the child to alter
+	 *            the child to alter
 	 * @return the new(or old) quadTree, being a child of this node.
 	 */
 	private QuadTree<T> populateChild(SizedObject<QuadTree<T>> child)

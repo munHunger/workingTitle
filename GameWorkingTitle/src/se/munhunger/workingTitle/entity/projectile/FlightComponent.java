@@ -8,13 +8,21 @@ import se.munhunger.workingTitle.util.SizedObject;
  * moving forward with some energy left and without hitting an object
  * 
  * @author munhunger
- *		
+ * 		
  */
 public interface FlightComponent extends ProjectileComponent
 {
 	/**
 	 * Action to take every tick when this projectile should move
-	 * @param size the bouning of the projectile
+	 * 
+	 * @param size
+	 *            the bouning of the projectile
 	 */
 	public void fly(SizedObject<Entity> size);
+	
+	/**
+	 * @return the energy amount of this projectile. This will result in damage,
+	 *         i.e. more energy more damage
+	 */
+	public float getEnergy();
 }
