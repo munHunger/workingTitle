@@ -88,6 +88,7 @@ public class ProjectileController
 												entity.getYf() - projectile.getYf(),
 												entity.getXf() + entity.getWidth() / 2 - projectile.getXf(),
 												entity.getYf() + entity.getHeight() / 2 - projectile.getYf());
+										int resources = 0;
 										for (SizedObject<Tile> t : hitTiles)
 										{
 											if (t.getObject() instanceof ShipBlock)
@@ -96,13 +97,15 @@ public class ProjectileController
 												for (FlightComponent fl : cp.flightComponents)
 													if (block.damage(fl.getEnergy() * 5f))
 													{
-														cp.from.addText("+1 kill");
+														resources++;
 														entity.getObject().getParts().remove(t, true);
 														break;
 													}
 											}
 											t.getObject().color = t.getObject().color.darker();
 										}
+										if (resources > 0)
+											cp.from.addResources(resources);
 										if (!hitTiles.isEmpty())
 											cp.currentState = CompleteProjectile.State.HIT;
 									}

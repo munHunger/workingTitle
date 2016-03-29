@@ -37,6 +37,13 @@ public class Entity implements Paintable
 	private SizedObject<Entity> size;
 	
 	/**
+	 * Notes the amount of resources in this entity<br />
+	 * Resources is a type of currency that can be used to "buy" new parts for
+	 * the entity
+	 */
+	private int resources = 0;
+	
+	/**
 	 * Simple constructor
 	 */
 	public Entity()
@@ -147,6 +154,39 @@ public class Entity implements Paintable
 		{
 			Log.error(e, "Interrupted while trying to add text to entity", this);
 		}
+	}
+	
+	/**
+	 * Adds resources to this entity.
+	 * This will also add a text above the entity saying that it got(or lost)
+	 * some new
+	 * resources
+	 * 
+	 * @param amount
+	 *            the amount of resources to add
+	 */
+	public void addResources(int amount)
+	{
+		resources += amount;
+		addText((amount > 0 ? "+" : "-") + amount + " resource" + (Math.abs(amount) > 1 ? "s" : ""));
+	}
+	
+	/**
+	 * @return the amount of resources held by this object
+	 */
+	public int getResources()
+	{
+		return resources;
+	}
+	
+	/**
+	 * Sets the amount of resources for this object to hold
+	 * 
+	 * @param amount
+	 */
+	public void setResources(int amount)
+	{
+		this.resources = amount;
 	}
 	
 	@Override

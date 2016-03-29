@@ -16,6 +16,7 @@ import se.munhunger.workingTitle.entity.Asteroid;
 import se.munhunger.workingTitle.entity.Entity;
 import se.munhunger.workingTitle.entity.ship.Ship;
 import se.munhunger.workingTitle.graphics.BackDrop;
+import se.munhunger.workingTitle.graphics.Text;
 import se.munhunger.workingTitle.util.Globals;
 import se.munhunger.workingTitle.util.QuadTree;
 import se.munhunger.workingTitle.util.SizedObject;
@@ -87,6 +88,7 @@ public class WorkingTitle
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				Text.paintString(g, spaceShip.getResources() + " Resources", 10, 10, Text.TextMode.LEFT);
 				repaint();
 			}
 		};
