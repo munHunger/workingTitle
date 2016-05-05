@@ -1,4 +1,4 @@
-package se.munhunger.workingTitle.graphics;
+package se.munhunger.workingTitle.graphics.ui;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;

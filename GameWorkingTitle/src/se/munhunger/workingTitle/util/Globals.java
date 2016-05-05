@@ -2,6 +2,8 @@ package se.munhunger.workingTitle.util;
 
 import java.util.Random;
 
+import javax.swing.JComponent;
+
 import se.munhunger.workingTitle.entity.Entity;
 
 /**
@@ -37,4 +39,9 @@ public class Globals
 	 * it can take a seed
 	 */
 	public static Random random = new Random(42L);
+	
+	/**
+	 * The component to paint the world onto
+	 */
+	public static JComponent canvas;
 }

@@ -11,8 +11,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
 
 import se.munhunger.workingTitle.graphics.Paintable;
-import se.munhunger.workingTitle.graphics.Text;
-import se.munhunger.workingTitle.graphics.Text.TextMode;
+import se.munhunger.workingTitle.graphics.ui.Text;
+import se.munhunger.workingTitle.graphics.ui.Text.TextMode;
 import se.munhunger.workingTitle.util.Globals;
 import se.munhunger.workingTitle.util.Log;
 import se.munhunger.workingTitle.util.QuadTree;

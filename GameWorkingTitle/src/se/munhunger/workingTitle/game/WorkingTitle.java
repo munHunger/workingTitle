@@ -16,7 +16,8 @@ import se.munhunger.workingTitle.entity.Asteroid;
 import se.munhunger.workingTitle.entity.Entity;
 import se.munhunger.workingTitle.entity.ship.Ship;
 import se.munhunger.workingTitle.graphics.BackDrop;
-import se.munhunger.workingTitle.graphics.Text;
+import se.munhunger.workingTitle.graphics.ui.ShipBuilder;
+import se.munhunger.workingTitle.graphics.ui.Text;
 import se.munhunger.workingTitle.util.Globals;
 import se.munhunger.workingTitle.util.QuadTree;
 import se.munhunger.workingTitle.util.SizedObject;
@@ -57,6 +58,7 @@ public class WorkingTitle
 		
 		JFrame frame = new JFrame("Working Title");
 		final BackDrop backDrop = new BackDrop();
+		ShipBuilder builder = new ShipBuilder((Ship) spaceShip);
 		JPanel panel = new JPanel()
 		{
 			
@@ -89,9 +91,13 @@ public class WorkingTitle
 					e.printStackTrace();
 				}
 				Text.paintString(g, spaceShip.getResources() + " Resources", 10, 10, Text.TextMode.LEFT);
+				builder.paintBuilder((Graphics2D) g);
 				repaint();
 			}
 		};
+		panel.addMouseListener(builder);
+		panel.addMouseMotionListener(builder);
+		Globals.canvas = panel;
 		panel.addKeyListener((KeyListener) spaceShip);
 		panel.addMouseMotionListener((MouseMotionListener) spaceShip);
 		panel.addMouseListener((MouseListener) spaceShip);
