@@ -8,7 +8,7 @@ import se.munhunger.workingTitle.util.Globals;
  * Interface to denote that the object can be painted in a meaningful way
  * 
  * @author munhunger
- *		
+ * 		
  */
 public interface Paintable
 {
@@ -29,6 +29,8 @@ public interface Paintable
 	 *            coordinate
 	 * @param displace
 	 *            if true the zoom will displace its x and y position
+	 * @param zoom
+	 *            how much to zoom the object
 	 */
-	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace);
+	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace, float zoom);
 }

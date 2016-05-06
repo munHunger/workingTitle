@@ -56,7 +56,7 @@ public class BackDrop implements Paintable
 	}
 	
 	@Override
-	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
+	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace, float zoom)
 	{
 		for (int i = 0; i < backDrops.length; i++)
 		{

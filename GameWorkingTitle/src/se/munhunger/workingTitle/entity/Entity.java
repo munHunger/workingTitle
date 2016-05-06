@@ -29,12 +29,12 @@ public class Entity implements Paintable
 	/**
 	 * A tree of all the parts contained in this Entity
 	 */
-	protected QuadTree<Tile> parts;
+	public QuadTree<Tile> parts;
 	
 	/**
 	 * Size wrapper to keep the general size of this object
 	 */
-	private SizedObject<Entity> size;
+	public SizedObject<Entity> size;
 	
 	/**
 	 * Notes the amount of resources in this entity<br />
@@ -190,17 +190,18 @@ public class Entity implements Paintable
 	}
 	
 	@Override
-	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
+	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace, float zoom)
 	{
-		g2d.drawRect((int) (size.getXf() + xOffset), (int) (size.getYf() + yOffset), (size.getWidth()),
-				(size.getHeight()));
+		// g2d.drawRect((int) (size.getXf() + xOffset), (int) (size.getYf() +
+		// yOffset), (size.getWidth()),
+		// (size.getHeight()));
 		parts.getIntersect(parts.getBounds());
 		BufferedImage image = new BufferedImage(((size.getWidth() + 1)), ((size.getHeight() + 1)),
 				BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D imageGraphics = image.createGraphics();
 		for (SizedObject<Tile> t : parts.getAll())
 		{
-			t.getObject().paint(imageGraphics, 0, 0, displace);
+			t.getObject().paint(imageGraphics, 0, 0, displace, zoom);
 		}
 		AffineTransform oldAT = g2d.getTransform();
 		AffineTransform at = new AffineTransform();

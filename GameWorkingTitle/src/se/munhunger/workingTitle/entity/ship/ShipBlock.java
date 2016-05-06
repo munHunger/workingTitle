@@ -1,5 +1,7 @@
 package se.munhunger.workingTitle.entity.ship;
 
+import java.util.ArrayList;
+
 import se.munhunger.workingTitle.entity.Entity;
 import se.munhunger.workingTitle.entity.Tile;
 
@@ -11,6 +13,16 @@ import se.munhunger.workingTitle.entity.Tile;
  */
 public class ShipBlock extends Tile
 {
+	/**
+	 * A list of all blocks that have been instanciated
+	 */
+	public static ArrayList<ShipBlock> possibleBlocks = new ArrayList<>();
+	
+	static
+	{
+		possibleBlocks.add(new ShipBlock(0, 0, null));
+	}
+	
 	/**
 	 * The health of this Armor block. Goes from 0(dead) to 1(fully healed)
 	 */
@@ -82,5 +94,22 @@ public class ShipBlock extends Tile
 	{
 		super(x, y, r, g, b);
 		this.parent = parent;
+	}
+	
+	/**
+	 * Clones the shipblock.
+	 * This will be a shallow clone.
+	 * The cloned shipblock will have a new x,y position and a new parent(or
+	 * possibly the same)
+	 * 
+	 * @param x
+	 * @param y
+	 * @param ship
+	 *            parent ship
+	 * @return a cloned shipblock
+	 */
+	public ShipBlock clone(int x, int y, Ship ship)
+	{
+		return new ShipBlock(x, y, ship);
 	}
 }

@@ -377,14 +377,14 @@ public class QuadTree<T> implements Paintable
 		}
 		boolean removed = false;
 		for (SizedObject<T> o : horizontal)
-			if ((strict && o.equals(element)) || (!strict && o == element))
+			if ((strict && o.getBounds().equals(element.getBounds())) || (!strict && o == element))
 			{
 				removed = horizontal.remove(o);
 				break;
 			}
 		if (!removed)
 			for (SizedObject<T> o : vertical)
-				if ((strict && o.equals(element)) || (!strict && o == element))
+				if ((strict && o.getBounds().equals(element.getBounds())) || (!strict && o == element))
 				{
 					removed = vertical.remove(o);
 					break;
@@ -583,9 +583,8 @@ public class QuadTree<T> implements Paintable
 	}
 	
 	@Override
-	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
+	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace, float zoom)
 	{
-		float zoom = 1f;// Globals.zoom;
 		Color oldColor = g2d.getColor();
 		g2d.setColor(new Color(0, 255, 0, 50));
 		g2d.drawLine((int) ((horizontalMidLine.getX1() + xOffset) * (displace ? zoom : 1)),
@@ -600,13 +599,13 @@ public class QuadTree<T> implements Paintable
 		g2d.setColor(oldColor);
 		
 		if (upperLeft.getObject() != null)
-			upperLeft.getObject().paint(g2d, xOffset, yOffset, displace);
+			upperLeft.getObject().paint(g2d, xOffset, yOffset, displace, zoom);
 		if (upperRight.getObject() != null)
-			upperRight.getObject().paint(g2d, xOffset, yOffset, displace);
+			upperRight.getObject().paint(g2d, xOffset, yOffset, displace, zoom);
 		if (lowerLeft.getObject() != null)
-			lowerLeft.getObject().paint(g2d, xOffset, yOffset, displace);
+			lowerLeft.getObject().paint(g2d, xOffset, yOffset, displace, zoom);
 		if (lowerRight.getObject() != null)
-			lowerRight.getObject().paint(g2d, xOffset, yOffset, displace);
+			lowerRight.getObject().paint(g2d, xOffset, yOffset, displace, zoom);
 	}
 	
 }

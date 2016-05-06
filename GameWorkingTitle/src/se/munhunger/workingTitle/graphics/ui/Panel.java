@@ -118,5 +118,7 @@ public class Panel implements Component
 	@Override
 	public void mouseExited()
 	{
+		for (Component c : children)
+			c.mouseExited();
 	}
 }

@@ -44,6 +44,10 @@ public class Button implements Component
 	 * The image to draw inside the button
 	 */
 	private BufferedImage image;
+	/**
+	 * The action to perform when the button is pressed
+	 */
+	private Runnable action;
 	
 	/**
 	 * Basic constructor for a button that displays a text
@@ -82,6 +86,26 @@ public class Button implements Component
 	}
 	
 	/**
+	 * Sets the image to draw
+	 * 
+	 * @param image
+	 */
+	public void setImage(BufferedImage image)
+	{
+		this.image = image;
+	}
+	
+	/**
+	 * Sets the action to perform when the button is pressed
+	 * 
+	 * @param r
+	 */
+	public void setAction(Runnable r)
+	{
+		this.action = r;
+	}
+	
+	/**
 	 * Flag to indicate wether or not the mouse is hovering this button
 	 */
 	private boolean hover = false;
@@ -96,7 +120,7 @@ public class Button implements Component
 		g.setColor(hover ? Color.GREEN : Color.GRAY);
 		g.drawRoundRect(x + 4, y + 4, width - 8, height - 8, 15, 15);
 		if (image != null)
-			g.drawImage(image, x + width / 2 - image.getWidth() / 2, y, null);
+			g.drawImage(image, x + width / 2 - image.getWidth() / 2, y + height / 2 - image.getHeight() / 2, null);
 		else
 			Text.paintString(g, text, x + width / 2, y + 15, Text.TextMode.CENTER);
 		g.setColor(oldColor);
@@ -111,8 +135,8 @@ public class Button implements Component
 	@Override
 	public void mousePressed(int x, int y, int button)
 	{
-		// TODO Auto-generated method stub
-		
+		if (action != null)
+			action.run();
 	}
 	
 	@Override

@@ -61,12 +61,12 @@ public class Tile implements Paintable
 	}
 	
 	@Override
-	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
+	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace, float zoom)
 	{
-		int x = (int) ((size.getX() + xOffset) * (displace ? Globals.zoom : 1));
-		int y = (int) ((size.getY() + yOffset) * (displace ? Globals.zoom : 1));
-		int width = size.getWidth();
-		int height = size.getHeight();
+		int x = (int) ((size.getX() + xOffset) * (displace ? Globals.zoom * zoom : 1));
+		int y = (int) ((size.getY() + yOffset) * (displace ? Globals.zoom * zoom : 1));
+		int width = (int) (size.getWidth() * zoom);
+		int height = (int) (size.getHeight() * zoom);
 		BlockPainter.paintBlock(g2d, x, y, width, height, color);
 	}
 	

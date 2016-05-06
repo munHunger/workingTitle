@@ -17,7 +17,7 @@ import se.munhunger.workingTitle.util.SizedObject;
  * Notes a projectile that have all the needed parts to create a projectile.
  * 
  * @author munhunger
- * 
+ * 		
  */
 public abstract class CompleteProjectile extends Entity
 {
@@ -25,7 +25,7 @@ public abstract class CompleteProjectile extends Entity
 	 * The projectile state. Will note what action to take each tick
 	 * 
 	 * @author munhunger
-	 * 
+	 * 		
 	 */
 	public enum State
 	{
@@ -115,9 +115,9 @@ public abstract class CompleteProjectile extends Entity
 	}
 	
 	@Override
-	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace)
+	public void paint(Graphics2D g2d, float xOffset, float yOffset, boolean displace, float zoom)
 	{
-		super.paint(g2d, xOffset, yOffset, displace);
+		super.paint(g2d, xOffset, yOffset, displace, zoom);
 		SizedObject<?> size = getSize();
 		AffineTransform oldAT = g2d.getTransform();
 		AffineTransform at = new AffineTransform();

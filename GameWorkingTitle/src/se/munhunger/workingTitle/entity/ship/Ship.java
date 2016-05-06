@@ -22,7 +22,6 @@ import se.munhunger.workingTitle.util.SizedObject;
  * A spaceship that can be controlled.
  * 
  * @author munhunger
- * 		
  */
 public class Ship extends Entity implements KeyListener, MouseMotionListener, MouseListener
 {
@@ -133,6 +132,18 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 			default:
 				break;
 		}
+		validateSize();
+	}
+	
+	/**
+	 * Adds a new Block to the ship
+	 * 
+	 * @param s
+	 *            the block to add
+	 */
+	public void addBlock(ShipBlock s)
+	{
+		parts = parts.add(s.getSize());
 		validateSize();
 	}
 	

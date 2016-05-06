@@ -10,10 +10,14 @@ import se.munhunger.workingTitle.util.Globals;
  * Denotes a basic weapon block that can possibly fire lasers?
  * 
  * @author munhunger
- * 
  */
 public class Weapon extends ShipBlock
 {
+	static
+	{
+		ShipBlock.possibleBlocks.add(new Weapon(0, 0, null));
+	}
+	
 	/**
 	 * Projectile related to this weapon block
 	 */
@@ -60,15 +64,20 @@ public class Weapon extends ShipBlock
 	 * Basic constructor that creates a plain Weapon block
 	 * 
 	 * @param x
-	 * the x position
+	 *            the x position
 	 * @param y
-	 * the y position
+	 *            the y position
 	 * @param parent
-	 * holding ship entity
+	 *            holding ship entity
 	 */
 	public Weapon(int x, int y, Ship parent)
 	{
 		super(x, y, 1f, 0f, 0f, parent);
 	}
 	
+	@Override
+	public ShipBlock clone(int x, int y, Ship ship)
+	{
+		return new Weapon(x, y, ship);
+	}
 }

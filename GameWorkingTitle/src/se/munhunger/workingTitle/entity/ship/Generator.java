@@ -6,6 +6,11 @@ package se.munhunger.workingTitle.entity.ship;
  */
 public class Generator extends ShipBlock
 {
+	static
+	{
+		ShipBlock.possibleBlocks.add(new Generator(0, 0, null));
+	}
+	
 	/**
 	 * How much energy this block is currently holding
 	 */
@@ -87,5 +92,11 @@ public class Generator extends ShipBlock
 	{
 		buffer = Math.min(maxStorage, buffer + (System.currentTimeMillis() - lastDraw) / 1000f);
 		lastDraw = System.currentTimeMillis();
+	}
+	
+	@Override
+	public ShipBlock clone(int x, int y, Ship ship)
+	{
+		return new Generator(x, y, ship);
 	}
 }

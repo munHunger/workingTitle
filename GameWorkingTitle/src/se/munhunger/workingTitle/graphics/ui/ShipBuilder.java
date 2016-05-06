@@ -10,9 +10,13 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 
+import se.munhunger.workingTitle.entity.Tile;
 import se.munhunger.workingTitle.entity.ship.Ship;
+import se.munhunger.workingTitle.entity.ship.ShipBlock;
 import se.munhunger.workingTitle.graphics.BlockPainter;
 import se.munhunger.workingTitle.util.DiamondSquareFractal;
+import se.munhunger.workingTitle.util.Globals;
+import se.munhunger.workingTitle.util.SizedObject;
 
 /**
  * GUI for building your ship
@@ -26,6 +30,30 @@ public class ShipBuilder implements MouseListener, MouseMotionListener
 	 * The ship to build in this builder
 	 */
 	private Ship ship;
+	
+	/**
+	 * If true, this builder will be rendered
+	 */
+	private boolean visible = false;
+	
+	/**
+	 * @return true if the builder is supposed to be rendered
+	 */
+	public boolean isVisible()
+	{
+		return visible;
+	}
+	
+	/**
+	 * Sets the visibility of the builder
+	 * 
+	 * @param visible
+	 *            true if the builder should be rendered
+	 */
+	public void setVisible(boolean visible)
+	{
+		this.visible = visible;
+	}
 	
 	/**
 	 * Constructor that gives the builder an object to build on
@@ -42,12 +70,17 @@ public class ShipBuilder implements MouseListener, MouseMotionListener
 	 * The image to draw underneath the shipbuilder to give some indication that
 	 * the user is in the shipbuilding mode
 	 */
-	private BufferedImage backdrop = null;
+	private static BufferedImage backdrop = null;
+	
+	static
+	{
+		generateBackdrop();
+	}
 	
 	/**
 	 * Function to pregenerate a backdrop
 	 */
-	private void generateBackdrop()
+	private static void generateBackdrop()
 	{
 		int gridSize = 50;
 		int width = 2000;// Globals.canvas.getWidth();
@@ -87,27 +120,81 @@ public class ShipBuilder implements MouseListener, MouseMotionListener
 	}
 	
 	/**
+	 * This shipblock indicates what block type to place onto the ship
+	 */
+	private ShipBlock selectedType = new ShipBlock(0, 0, null);
+	
+	/**
+	 * A button used to indicated what block to place onto the ship
+	 * 
+	 * @see #selectedType
+	 */
+	private Button selectedBlockButton = new Button(0, 700, 225, 70, "");
+	/**
 	 * The panel for where to put all the tools
 	 */
 	private Panel buildingPanel = new Panel(50, 75, 250, 800);
 	
 	{
-		buildingPanel.addComponent(new Button(0, 0, 150, 50, "button"));
+		for (int i = 0; i < ShipBlock.possibleBlocks.size(); i++)
+		{
+			final ShipBlock block = ShipBlock.possibleBlocks.get(i);
+			BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_3BYTE_BGR);
+			BlockPainter.paintBlock((Graphics2D) image.getGraphics(), 0, 0, image.getWidth(), image.getHeight(),
+					block.color);
+			Button b = new Button((i * 75) % 250, i * 75 / 250 * 75, 70, 70, image);
+			b.setAction(() ->
+			{
+				selectedType = block;
+				updateSelectionButton();
+			});
+			buildingPanel.addComponent(b);
+		}
+		updateSelectionButton();
+		buildingPanel.addComponent(selectedBlockButton);
 	}
 	
 	/**
+	 * Changes the image on {@link #selectedBlockButton} to reflect the value of
+	 * {@link #selectedType}
+	 */
+	private void updateSelectionButton()
+	{
+		BufferedImage image = new BufferedImage(50, 50, BufferedImage.TYPE_3BYTE_BGR);
+		BlockPainter.paintBlock((Graphics2D) image.getGraphics(), 0, 0, image.getWidth(), image.getHeight(),
+				selectedType.color);
+		selectedBlockButton.setImage(image);
+	}
+	
+	/**
+	 * Paints the builder, the ship and all of its gui components if it is
+	 * visible.
+	 * 
+	 * @see #visible
 	 * @param g
 	 */
 	public void paintBuilder(Graphics2D g)
 	{
+		if (!visible)
+			return;
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.setRenderingHints(rh);
 		Color oldColor = g.getColor();
 		if (backdrop == null)
 			generateBackdrop();
-			
 		g.drawImage(backdrop, 0, 0, null);
+		
+		float zoom = 5f;
+		ship.parts.getIntersect(ship.parts.getBounds());
+		BufferedImage image = new BufferedImage((int) (((ship.size.getWidth() + 1)) * zoom),
+				(int) (((ship.size.getHeight() + 1)) * zoom), BufferedImage.TYPE_4BYTE_ABGR);
+		Graphics2D imageGraphics = image.createGraphics();
+		for (SizedObject<Tile> t : ship.parts.getAll())
+		{
+			t.getObject().paint(imageGraphics, 0, 0, true, zoom);
+		}
+		g.drawImage(image, (int) (325 + Globals.zoom * zoom), (int) (100 + Globals.zoom * zoom), null);
 		buildingPanel.paintComponents(g);
 		g.setColor(oldColor);
 	}
@@ -122,9 +209,27 @@ public class ShipBuilder implements MouseListener, MouseMotionListener
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
+		if (!visible)
+			return;
 		if (buildingPanel.getBounds().contains(e.getPoint()))
 			buildingPanel.mousePressed((int) (e.getX() - buildingPanel.getBounds().getX()),
 					(int) (e.getY() - buildingPanel.getBounds().getY()), e.getButton());
+		else
+		{
+			if (e.getX() > 300 && e.getY() > 75)
+			{
+				int x = (int) ((e.getX() - 325 - Globals.zoom * 5f) / Globals.zoom / 5f);
+				int y = (int) ((e.getY() - 100 - Globals.zoom * 5f) / Globals.zoom / 5f);
+				ShipBlock block = selectedType.clone(x, y, ship);
+				if (e.getButton() == MouseEvent.BUTTON1)
+					ship.addBlock(block);
+				else if (e.getButton() == MouseEvent.BUTTON3)
+				{
+					System.out.println("REMOVE");
+					ship.parts.remove(block.getSize(), true);
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -150,6 +255,8 @@ public class ShipBuilder implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseDragged(MouseEvent e)
 	{
+		if (!visible)
+			return;
 		if (buildingPanel.getBounds().contains(e.getPoint()))
 			buildingPanel.mouseDragged((int) (e.getX() - buildingPanel.getBounds().getX()),
 					(int) (e.getY() - buildingPanel.getBounds().getY()), e.getButton());
@@ -158,8 +265,12 @@ public class ShipBuilder implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseMoved(MouseEvent e)
 	{
+		if (!visible)
+			return;
 		if (buildingPanel.getBounds().contains(e.getPoint()))
 			buildingPanel.mouseMoved((int) (e.getX() - buildingPanel.getBounds().getX()),
 					(int) (e.getY() - buildingPanel.getBounds().getY()), e.getButton());
+		else
+			buildingPanel.mouseExited();
 	}
 }

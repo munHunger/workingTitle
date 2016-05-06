@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -28,7 +29,7 @@ import se.munhunger.workingTitle.util.SizedObject;
  * @author munhunger
  * 		
  */
-public class WorkingTitle
+public class WorkingTitle implements KeyListener
 {
 	/**
 	 * Main loop
@@ -42,13 +43,26 @@ public class WorkingTitle
 	}
 	
 	/**
+	 * The players ship
+	 */
+	private Entity spaceShip = new Ship(Ship.ShipType.WIDE);
+	
+	/**
+	 * The ShipBuilder for the player
+	 */
+	ShipBuilder builder = new ShipBuilder((Ship) spaceShip);
+	
+	/**
+	 * Main panel that holds everything
+	 */
+	JPanel panel;
+	
+	/**
 	 * constructor that launches everything important
 	 */
 	public WorkingTitle()
 	{
 		Globals.worldRoot = new QuadTree<Entity>(0, 0, 512, 512);
-		
-		Entity spaceShip = new Ship(Ship.ShipType.WIDE);
 		
 		Globals.worldRoot = Globals.worldRoot.add(spaceShip.getSize());
 		
@@ -58,8 +72,7 @@ public class WorkingTitle
 		
 		JFrame frame = new JFrame("Working Title");
 		final BackDrop backDrop = new BackDrop();
-		ShipBuilder builder = new ShipBuilder((Ship) spaceShip);
-		JPanel panel = new JPanel()
+		panel = new JPanel()
 		{
 			
 			/**
@@ -72,13 +85,13 @@ public class WorkingTitle
 			{
 				super.paintComponent(g);
 				this.setBackground(new Color(10, 15, 15));
-				backDrop.paint((Graphics2D) g, Globals.xOffset, Globals.yOffset, true);
+				backDrop.paint((Graphics2D) g, Globals.xOffset, Globals.yOffset, true, 1f);
 				// Globals.worldRoot.paint((Graphics2D) g, 0, 0, true);
 				// spaceShip.paint((Graphics2D) g, 0, 0, true);
 				for (SizedObject<Entity> t : Globals.worldRoot.getAll())
 				{
 					// System.out.println(t);
-					t.getObject().paint((Graphics2D) g, Globals.xOffset, Globals.yOffset, true);
+					t.getObject().paint((Graphics2D) g, Globals.xOffset, Globals.yOffset, true, 1f);
 				}
 				
 				try
@@ -99,6 +112,7 @@ public class WorkingTitle
 		panel.addMouseMotionListener(builder);
 		Globals.canvas = panel;
 		panel.addKeyListener((KeyListener) spaceShip);
+		panel.addKeyListener(this);
 		panel.addMouseMotionListener((MouseMotionListener) spaceShip);
 		panel.addMouseListener((MouseListener) spaceShip);
 		panel.setFocusable(true);
@@ -138,5 +152,38 @@ public class WorkingTitle
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(600, 600);
 		frame.setVisible(true);
+	}
+	
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+	}
+	
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		if (e.getKeyCode() == KeyEvent.VK_E)
+		{
+			builder.setVisible(!builder.isVisible());
+			panel.removeMouseListener(builder.isVisible() ? (Ship) spaceShip : builder);
+			panel.addMouseListener(builder.isVisible() ? builder : (Ship) spaceShip);
+			if (builder.isVisible())
+			{
+				panel.removeKeyListener((Ship) spaceShip);
+				panel.removeMouseMotionListener((Ship) spaceShip);
+			}
+			else
+			{
+				panel.addKeyListener((Ship) spaceShip);
+				panel.addMouseMotionListener((Ship) spaceShip);
+			}
+		}
+	}
+	
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }
