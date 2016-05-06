@@ -13,6 +13,7 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import se.munhunger.workingTitle.ai.AIController;
 import se.munhunger.workingTitle.entity.Asteroid;
 import se.munhunger.workingTitle.entity.Entity;
 import se.munhunger.workingTitle.entity.ship.Ship;
@@ -45,7 +46,7 @@ public class WorkingTitle implements KeyListener
 	/**
 	 * The players ship
 	 */
-	private Entity spaceShip = new Ship(Ship.ShipType.WIDE);
+	private Entity spaceShip = new Ship(Ship.ShipType.WIDE, true);
 	
 	/**
 	 * The ShipBuilder for the player
@@ -72,6 +73,7 @@ public class WorkingTitle implements KeyListener
 		
 		JFrame frame = new JFrame("Working Title");
 		final BackDrop backDrop = new BackDrop();
+		AIController.playerShips.add((Ship) spaceShip);
 		panel = new JPanel()
 		{
 			
@@ -108,8 +110,6 @@ public class WorkingTitle implements KeyListener
 				repaint();
 			}
 		};
-		panel.addMouseListener(builder);
-		panel.addMouseMotionListener(builder);
 		Globals.canvas = panel;
 		panel.addKeyListener((KeyListener) spaceShip);
 		panel.addKeyListener(this);

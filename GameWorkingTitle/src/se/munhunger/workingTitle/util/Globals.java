@@ -44,4 +44,5 @@ public class Globals
 	 * The component to paint the world onto
 	 */
 	public static JComponent canvas;
+	
 }

@@ -43,68 +43,82 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 	/**
 	 * Speed of the ship. Notes how fast it can move through space
 	 */
-	private float speed = 0.05f;
+	private float speed = 0.1f;
+	
+	/**
+	 * Returns a float of how many units this ship can move per step
+	 * 
+	 * @return the speed of the ship {@link #speed}
+	 */
+	public float getSpeed()
+	{
+		return speed;
+	}
 	
 	/**
 	 * The mapping for keyboard key actions
 	 */
 	private static Map<Integer, Runnable> keyMaps = new HashMap<Integer, Runnable>();
 	
-	{
-		keyMaps.put(KeyEvent.VK_W, () ->
-		{
-			Keyboard.press(KeyEvent.VK_W, () ->
-			{
-				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
-				{
-					getSize().setYf(getSize().getYf() - Keyboard.getTimeSinceLast(KeyEvent.VK_W) * speed);
-					Globals.yOffset += Keyboard.getTimeSinceLast(KeyEvent.VK_W) * speed;
-				});
-			});
-		});
-		keyMaps.put(KeyEvent.VK_S, () ->
-		{
-			Keyboard.press(KeyEvent.VK_S, () ->
-			{
-				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
-				{
-					getSize().setYf(getSize().getYf() + Keyboard.getTimeSinceLast(KeyEvent.VK_S) * speed);
-					Globals.yOffset -= Keyboard.getTimeSinceLast(KeyEvent.VK_S) * speed;
-				});
-			});
-		});
-		keyMaps.put(KeyEvent.VK_A, () ->
-		{
-			Keyboard.press(KeyEvent.VK_A, () ->
-			{
-				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
-				{
-					getSize().setXf(getSize().getXf() - Keyboard.getTimeSinceLast(KeyEvent.VK_A) * speed);
-					Globals.xOffset += Keyboard.getTimeSinceLast(KeyEvent.VK_A) * speed;
-				});
-			});
-		});
-		keyMaps.put(KeyEvent.VK_D, () ->
-		{
-			Keyboard.press(KeyEvent.VK_D, () ->
-			{
-				Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
-				{
-					getSize().setXf(getSize().getXf() + Keyboard.getTimeSinceLast(KeyEvent.VK_D) * speed);
-					Globals.xOffset -= Keyboard.getTimeSinceLast(KeyEvent.VK_D) * speed;
-				});
-			});
-		});
-	}
-	
 	/**
 	 * Basic constructor
 	 * 
 	 * @param type
 	 *            the type to generate for the ship
+	 * @param playerShip
+	 *            if true then this will be regarded as the players ship. This
+	 *            has zero effect on allegiance, but if true it will overwrite
+	 *            any existing keybindings to accept all keyboard controls
 	 */
-	public Ship(ShipType type)
+	public Ship(ShipType type, boolean playerShip)
 	{
+		if (playerShip)
+		{
+			keyMaps.put(KeyEvent.VK_W, () ->
+			{
+				Keyboard.press(KeyEvent.VK_W, () ->
+				{
+					Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
+					{
+						getSize().setYf(getSize().getYf() - Keyboard.getTimeSinceLast(KeyEvent.VK_W) * speed);
+						Globals.yOffset += Keyboard.getTimeSinceLast(KeyEvent.VK_W) * speed;
+					});
+				});
+			});
+			keyMaps.put(KeyEvent.VK_S, () ->
+			{
+				Keyboard.press(KeyEvent.VK_S, () ->
+				{
+					Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
+					{
+						getSize().setYf(getSize().getYf() + Keyboard.getTimeSinceLast(KeyEvent.VK_S) * speed);
+						Globals.yOffset -= Keyboard.getTimeSinceLast(KeyEvent.VK_S) * speed;
+					});
+				});
+			});
+			keyMaps.put(KeyEvent.VK_A, () ->
+			{
+				Keyboard.press(KeyEvent.VK_A, () ->
+				{
+					Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
+					{
+						getSize().setXf(getSize().getXf() - Keyboard.getTimeSinceLast(KeyEvent.VK_A) * speed);
+						Globals.xOffset += Keyboard.getTimeSinceLast(KeyEvent.VK_A) * speed;
+					});
+				});
+			});
+			keyMaps.put(KeyEvent.VK_D, () ->
+			{
+				Keyboard.press(KeyEvent.VK_D, () ->
+				{
+					Globals.worldRoot = Globals.worldRoot.updateObjectPosition(getSize(), () ->
+					{
+						getSize().setXf(getSize().getXf() + Keyboard.getTimeSinceLast(KeyEvent.VK_D) * speed);
+						Globals.xOffset -= Keyboard.getTimeSinceLast(KeyEvent.VK_D) * speed;
+					});
+				});
+			});
+		}
 		switch (type)
 		{
 			case WIDE:
@@ -150,7 +164,7 @@ public class Ship extends Entity implements KeyListener, MouseMotionListener, Mo
 	/**
 	 * Action for firing the weapons from this ship
 	 */
-	private void fire()
+	public void fire()
 	{
 		for (SizedObject<Tile> t : parts.getIntersect(parts.getBounds()))
 		{
